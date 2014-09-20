@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flurry</title>
+    <style type="text/css">
+        body, html
+        {
+            margin:  0;
+            padding: 0;
+        }
+
+        body, html
+        {
+            background: #000;
+            width:      100%;
+            height:     100%;
+            overflow:   hidden;
+        }
+
+        canvas#render
+        {
+            background: #000;
+            width:      100%;
+            height:     100%;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="render"></canvas>
+</body>
+<scripts>
+    <script src="js/Flurry.js"></script>
+
+    <script type="application/javascript">
+        Flurry.main('render');
+    </script>
+</scripts>
+</html>
