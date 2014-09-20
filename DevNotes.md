@@ -1,3 +1,11 @@
+## Note 4
+
+As I begin implementing the GL rendering code itself, I realize how much the C code is
+relying on fixed-function OpenGL, which is now largely superseded and missing in webGL.
+
+This means I will have to learn to write my own shaders, which will be an interesting
+exercise. In the meantime, I will port the rest of the code not relying on GL.
+
 ## Note 3
 
 I am now more familiar with AltiVec and its purpose. I am using [this guide](http://www.freescale.com/files/32bit/doc/ref_manual/ALTIVECPIM.pdf)
@@ -7,8 +15,8 @@ javascript (if necessary).
 ## Note 2
 
 Throughout the code, I have noticed that the screensaver can run in four "modes". Two
-of which appear to work on C scalars, the other two make use of AltiVec vectors (IIRC
-AltiVec was relatively new to Macs at the time Flurry was written).
+of which appear to work on C scalar arrays, the other two make use of AltiVec vectors
+(IIRC AltiVec was relatively new to Macs at the time Flurry was written).
 
 Because of the large amount of calculation and rendering code for each mode, I have
 decided to only port code for the VECTOR_UNROLLED mode (VECTOR_SIMPLE is unused).

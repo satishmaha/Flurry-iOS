@@ -8,5 +8,8 @@ Flurry.Spark = function()
     this.color    = new Color();
     this.mystery  = 0;
 
-    this.draw = function() { /* TODO stub */ }
+    this.init        = function() { /* TODO stub */ }
+    this.update      = function() { /* TODO stub */ }
+    this.updateColor = function() { /* TODO stub */ }
+    this.draw        = function() { /* TODO stub */ }
 };

@@ -82,7 +82,8 @@ function _scope()
 
     GLSaver.setupGL = function()
     {
-        var state = GLSaver.state;
+        var state = GLSaver.state,
+            gl    = Flurry.webgl;
 
         state.spark[0].mystery  = 1800 / 13;
         state.spark[1].mystery  = (1800 * 2)  / 13;
@@ -97,10 +98,25 @@ function _scope()
         state.spark[10].mystery = (1800 * 11) / 13;
         state.spark[11].mystery = (1800 * 12) / 13;
 
-//        for (var i = 0; i < MAX_SMOKE/4; i++)
-//            for (var k = 0; k < 4; k++)
-//
-        // TODO finish
+        for (var i = 0; i < MAX_SMOKE/4; i++)
+            for (var k = 0; k < 4; k++)
+                GLSaver.state.particles[i].dead[k] = 1; // TRUE (FIXME ?)
+
+        for (var i = 0; i < 12; i++)
+            GLSaver.state.spark[i].update();
+
+        gl.disable(gl.DEPTH_TEST);
+        gl.disable(gl.CULL_FACE);
+        gl.enable(gl.BLEND);
+        // FIXME alphaFunc is missing from webGL; fragment shader?
+        // See http://stackoverflow.com/questions/7277047/alphafunctions-in-webgl
+        // Investigate flat shading via vert. duplication
+
+        gl.viewport(0, 0, Flurry.canvas.clientWidth, Flurry.canvas.clientHeight);
+        gl.clearColor(0, 0, 0, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        state.oldTime = GLSaver.timeSinceStart() + state.flurryRandomSeed;
     };
 
     GLSaver.render = function() { /* TODO Stub */ };

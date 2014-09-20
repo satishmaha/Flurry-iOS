@@ -100,7 +100,7 @@ Flurry.Particle = function()
             v0   = (this.frame >> 3) * 0.125,
             u1   = u0 + 0.125,
             v1   = v0 + 0.125,
-            size = (3500 * (Flurry.canvas.clientWidth / 1024)),
+            size = (3500 * (screenW / 1024)),
             w    = Math.max(1.5, size / this.pos.z),
             ow   = Math.max(1.5, size / this.oldPos.z);
 

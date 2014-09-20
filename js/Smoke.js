@@ -19,7 +19,27 @@ Flurry.Smoke = function()
     this.seraphimColors   = ArrayOf.AltiVecFloat(MAX_SMOKE * 4 + 1);
     this.seraphimTextures = new Float32Array(MAX_SMOKE * 2 * 4);
 
-    this.init   = function() { /* TODO Stub */ };
-    this.update = function() { /* TODO Stub */ };
+    this.init   = function()
+    {
+        this.nextParticle    = 0;
+        this.nextSubParticle = 0;
+
+        this.lastTime  = 0.25;
+        this.firstTime = 1;
+        this.frame     = 0;
+
+        for (var i = 0; i < 3; i++)
+            this.old[i] = Math.randFlt(-100, 100);
+    };
+
+    this.update = function()
+    {
+        var state   = Flurry.GLSaver.state,
+            screenW = Flurry.canvas.clientWidth,
+            screenH = Flurry.canvas.clientHeight;
+
+
+    };
+
     this.draw   = function() { /* TODO Stub */ };
 }
