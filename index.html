@@ -29,7 +29,18 @@
     <canvas id="render"></canvas>
 </body>
 <scripts>
+    <script type="application/javascript">
+        const MAX_PARTICLES = 2500;
+        const MAX_SMOKE     = 3600;
+        const MAX_ANGLES    = 16384;
+    </script>
+
+    <script src="js/util/ArrayOf.js"></script>
+    <script src="js/util/Structs.js"></script>
+
     <script src="js/Flurry.js"></script>
+    <script src="js/Particle.js"></script>
+    <script src="js/GLSaver.js"></script>
 
     <script type="application/javascript">
         Flurry.main('render');
