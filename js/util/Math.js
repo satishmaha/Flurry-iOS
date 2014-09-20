@@ -19,9 +19,9 @@ Math.fastDist2D = function(x, y)
 Math.randFlt = function(min, max)
 {
     return (min + (max - min) * Math.random());
-}
+};
 
 Math.randBell = function(scale)
 {
     return (scale * (1.0 - ( Math.random() + Math.random() + Math.random() ) / 1.5));
-}
+};

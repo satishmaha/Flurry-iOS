@@ -3,6 +3,8 @@
 
 Flurry.Star = function()
 {
+    'use strict';
+
     const BIG_MYSTERY = 1800;
 
     this.pos      = new Vector3();
@@ -12,6 +14,8 @@ Flurry.Star = function()
 
     this.init = function()
     {
+        'use strict';
+
         this.pos.x = Math.randFlt(-10000, 10000);
         this.pos.y = Math.randFlt(-10000, 10000);
         this.pos.z = Math.randFlt(-10000, 10000);
@@ -22,7 +26,9 @@ Flurry.Star = function()
 
     this.update = function()
     {
-        var state         = Flurry.GLSaver.state,
+        'use strict';
+
+        var state         = Flurry.GLSaver.State,
             rotsPerSecond = (2*Math.PI*12/MAX_ANGLES) * this.rotSpeed,
             thisAngle     = state.time * rotsPerSecond;
 
@@ -64,6 +70,8 @@ Flurry.Star = function()
 
     this.draw = function()
     {
+        'use strict';
+
         var gl      = Flurry.webgl,
             screenW = Flurry.canvas.clientWidth,
             screenH = Flurry.canvas.clientHeight,

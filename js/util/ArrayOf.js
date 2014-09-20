@@ -9,7 +9,7 @@
  * @return {Array.<T>} Array of elements, each of the given type
  * @template T
  */
-ArrayOf = function(proto, count)
+var ArrayOf = function(proto, count)
 {
     var array = new Array(count);
 
@@ -25,12 +25,12 @@ ArrayOf = function(proto, count)
  * @param count
  * @returns {Uint16Array[]}
  */
-ArrayOf.AltiVecUInt = function(count)
+ArrayOf.AltiVecInt = function(count)
 {
     var array = new Array(count);
 
     for (var i = 0; i < count; i++)
-        array[i] = AltiVecInt();
+        array[i] = AltiVec.int();
 
     return array;
 };
@@ -46,7 +46,7 @@ ArrayOf.AltiVecFloat = function(count)
     var array = new Array(count);
 
     for (var i = 0; i < count; i++)
-        array[i] = AltiVecFloat();
+        array[i] = AltiVec.float();
 
     return array;
 };

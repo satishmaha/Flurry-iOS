@@ -3,9 +3,9 @@
 
 Flurry.Particle = function()
 {
-    this.charge = 0.0;
-    this.frame  = 0;
+    'use strict';
 
+    this.frame    = 0;
     this.pos      = new Vector3();
     this.oldPos   = new Vector3();
     this.deltaPos = new Vector3();
@@ -13,7 +13,9 @@ Flurry.Particle = function()
 
     this.init = function()
     {
-        var state   = Flurry.GLSaver.state,
+        'use strict';
+
+        var state   = Flurry.GLSaver.State,
             screenW = Flurry.canvas.clientWidth,
             screenH = Flurry.canvas.clientHeight,
             r1 = Math.random() * 35565,
@@ -39,19 +41,23 @@ Flurry.Particle = function()
 
     this.update = function()
     {
+        'use strict';
+
         this.oldPos.x = this.pos.x;
         this.oldPos.y = this.pos.y;
         this.oldPos.z = this.pos.z;
 
-        this.pos.x += this.deltaPos.x * Flurry.state.deltaTime;
-        this.pos.y += this.deltaPos.y * Flurry.state.deltaTime;
-        this.pos.z += this.deltaPos.z * Flurry.state.deltaTime;
+        this.pos.x += this.deltaPos.x * Flurry.State.deltaTime;
+        this.pos.y += this.deltaPos.y * Flurry.State.deltaTime;
+        this.pos.z += this.deltaPos.z * Flurry.State.deltaTime;
     };
 
     /** @returns {*} */
     this.draw = function()
     {
-        var state   = Flurry.GLSaver.state,
+        'use strict';
+
+        var state   = Flurry.GLSaver.State,
             screenW = Flurry.canvas.clientWidth,
             screenH = Flurry.canvas.clientHeight,
             screenX = (this.pos.x * screenW / this.pos.z) + screenW * 0.5,
