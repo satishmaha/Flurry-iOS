@@ -13,12 +13,28 @@ Flurry.Particle = function()
 
     this.init = function()
     {
-        var r1 = Math.random() * 35565,
+        var state   = Flurry.GLSaver.state,
+            screenW = Flurry.canvas.clientWidth,
+            screenH = Flurry.canvas.clientHeight,
+            r1 = Math.random() * 35565,
             r2 = Math.random() * 35565;
 
         this.oldPos.z = Math.randFlt(2500, 22500);
+        this.oldPos.x = ((r1 % screenW) - screenW * 0.5) / (screenW / this.oldPos.z);
+        this.oldPos.y = (screenH * 0.5 - (r2 % screenH)) / (screenW / this.oldPos.z);
 
-        // TODO finish
+        this.deltaPos.x = 0;
+        this.deltaPos.y = 0;
+        this.deltaPos.z = -state.starSpeed;
+
+        this.pos.x = this.oldPos.x + this.deltaPos.x;
+        this.pos.y = this.oldPos.y + this.deltaPos.y;
+        this.pos.z = this.oldPos.z + this.deltaPos.z;
+
+        this.color.r = Math.randFlt(0.125, 1.0);
+        this.color.g = Math.randFlt(0.125, 1.0);
+        this.color.b = Math.randFlt(0.125, 1.0);
+        this.frame   = 0;
     };
 
     this.update = function()
