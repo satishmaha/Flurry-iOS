@@ -11,8 +11,15 @@ Flurry.Particle = function()
     this.deltaPos = new Vector3();
     this.color    = new Color();
 
-    this.init   = function()
-    { /* TODO Stub */ };
+    this.init = function()
+    {
+        var r1 = Math.random() * 35565,
+            r2 = Math.random() * 35565;
+
+        this.oldPos.z = Math.randFlt(2500, 22500);
+
+        // TODO finish
+    };
 
     this.update = function()
     {
@@ -72,7 +79,7 @@ Flurry.Particle = function()
 
         var dX   = screenX - oldScreenX,
             dY   = screenY - oldScreenY,
-            d    = FastMath.Dist2D(dX, dY),
+            d    = Math.fastDist2D(dX, dY),
             u0   = (this.frame && 7) * 0.125,
             v0   = (this.frame >> 3) * 0.125,
             u1   = u0 + 0.125,
@@ -81,8 +88,9 @@ Flurry.Particle = function()
             w    = Math.max(1.5, size / this.pos.z),
             ow   = Math.max(1.5, size / this.oldPos.z);
 
-        s  = d ? w  / d : 0.0;
-        os = d ? ow / d : 0.0;
+        var s  = d ? w  / d : 0.0,
+            os = d ? ow / d : 0.0;
+
         d  = 2.0 + s;
 
         var dXs  = dX * s,
