@@ -8,8 +8,8 @@ Flurry.Star = function()
 
     const BIG_MYSTERY = 1800;
 
-    /** @type {Vector3} */
-    this.pos      = new Vector3();
+    /** @type {Float32Array} */
+    this.pos      = Vector3F();
     /** @type {number} */
     this.mystery  = 0.0;
     /** @type {number} */
@@ -21,9 +21,9 @@ Flurry.Star = function()
     {
         'use strict';
 
-        this.pos.x = Math.randFlt(-10000, 10000);
-        this.pos.y = Math.randFlt(-10000, 10000);
-        this.pos.z = Math.randFlt(-10000, 10000);
+        this.pos[0] = Math.randFlt(-10000, 10000);
+        this.pos[1] = Math.randFlt(-10000, 10000);
+        this.pos[2] = Math.randFlt(-10000, 10000);
 
         this.rotSpeed = Math.randFlt(0.4, 0.9);
         this.mystery  = Math.randFlt(0.0, 10.0);
@@ -46,17 +46,17 @@ Flurry.Star = function()
 
         var thisPointInRads = 2.0 * Math.PI * this.mystery / BIG_MYSTERY;
 
-        this.pos.x = 250 * cf * Math.cos(11 * (thisPointInRads + (3 * thisAngle)));
-        this.pos.y = 250 * cf * Math.sin(12 * (thisPointInRads + (4 * thisAngle)));
-        this.pos.z = 250 * Math.cos(23 * (thisPointInRads + (4 * thisAngle)));
+        this.pos[0] = 250 * cf * Math.cos(11 * (thisPointInRads + (3 * thisAngle)));
+        this.pos[1] = 250 * cf * Math.sin(12 * (thisPointInRads + (4 * thisAngle)));
+        this.pos[2] = 250 * Math.cos(23 * (thisPointInRads + (4 * thisAngle)));
 
         var rot = thisAngle * 0.501 + 5.01 * this.mystery / BIG_MYSTERY,
             cr  = Math.cos(rot),
             sr  = Math.sin(rot),
 
-            tmpX1 = this.pos.x * cr - this.pos.y * sr,
-            tmpY1 = this.pos.y * cr + this.pos.x * sr,
-            tmpZ1 = this.pos.z,
+            tmpX1 = this.pos[0] * cr - this.pos[1] * sr,
+            tmpY1 = this.pos[1] * cr + this.pos[0] * sr,
+            tmpZ1 = this.pos[2],
             tmpX2 = tmpX1 * cr - tmpZ1 * sr,
             // tmpY2 = tmpY1,
             tmpZ2 = tmpZ1 * cr + tmpX1 * sr,
@@ -68,9 +68,9 @@ Flurry.Star = function()
         cr  = Math.cos(rot);
         sr  = Math.sin(rot);
 
-        this.pos.x = tmpX2 * cr - tmpY3 * sr;
-        this.pos.y = tmpY3 * cr + tmpX2 * sr;
-        this.pos.z = tmpZ3;
+        this.pos[0] = tmpX2 * cr - tmpY3 * sr;
+        this.pos[1] = tmpY3 * cr + tmpX2 * sr;
+        this.pos[2] = tmpZ3;
     };
 
     this.draw = function()
@@ -86,10 +86,10 @@ Flurry.Star = function()
             return;
 
         var width   = 50000 * screenW / 1024,
-            z       = this.pos.z,
+            z       = this.pos[2],
             w       = width * 4 / z,
-            screenX = this.pos.x * screenW / z + screenW * 0.5,
-            screenY = this.pos.y * screenW / z + screenH * 0.5;
+            screenX = this.pos[0] * screenW / z + screenW * 0.5,
+            screenY = this.pos[1] * screenW / z + screenH * 0.5;
 
         // TODO: Continue GL code here using shader uniform
     };

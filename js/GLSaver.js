@@ -99,22 +99,22 @@ Flurry.GLSaver.setupOT = function()
 {
     'use strict';
 
-    if (timeCounter == 0)
-        timeCounter = Date.now();
+    if (Flurry.GLSaver.timeCounter == 0)
+        Flurry.GLSaver.timeCounter = Date.now();
 };
 
 Flurry.GLSaver.timeSinceStart = function()
 {
     'use strict';
 
-    return (Date.now() - timeCounter) / 1000;
+    return (Date.now() - Flurry.GLSaver.timeCounter) / 1000;
 };
 
 Flurry.GLSaver.setupGL = function()
 {
     'use strict';
 
-    var state = GLSaver.State,
+    var state = Flurry.GLSaver.State,
         gl    = Flurry.webgl;
 
     state.spark[0].mystery  = 1800 / 13;
@@ -132,10 +132,10 @@ Flurry.GLSaver.setupGL = function()
 
     for (var i = 0; i < MAX_SMOKE/4; i++)
         for (var k = 0; k < 4; k++)
-            GLSaver.State.particles[i].dead[k] = 1; // TRUE (FIXME ?)
+            state.particles[i].dead[k] = 1; // TRUE (FIXME ?)
 
     for (i = 0; i < 12; i++)
-        GLSaver.State.spark[i].update();
+        state.spark[i].update();
 
     gl.disable(WebGLRenderingContext.DEPTH_TEST);
     gl.disable(WebGLRenderingContext.CULL_FACE);
@@ -148,7 +148,7 @@ Flurry.GLSaver.setupGL = function()
     gl.clearColor(0, 0, 0, 1);
     gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
 
-    state.oldTime = GLSaver.timeSinceStart() + state.randSeed;
+    state.oldTime = Flurry.GLSaver.timeSinceStart() + state.randSeed;
 };
 
 Flurry.GLSaver.render = function() { /* TODO Stub */ };

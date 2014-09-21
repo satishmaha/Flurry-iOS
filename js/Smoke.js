@@ -15,8 +15,8 @@ Flurry.Smoke = function()
     /** @type {number} */
     this.lastParticleTime = 0;
 
-    /** @type {Vector3} */
-    this.oldPos    = new Vector3();
+    /** @type {Float32Array} */
+    this.oldPos    = new Vector3F();
     /** @type {boolean} */
     this.firstTime = false;
     /** @type {number} */
@@ -40,9 +40,9 @@ Flurry.Smoke = function()
         this.firstTime = true;
         this.frame     = 0;
 
-        this.oldPos.x = Math.randFlt(-100, 100);
-        this.oldPos.y = Math.randFlt(-100, 100);
-        this.oldPos.z = Math.randFlt(-100, 100);
+        this.oldPos[0] = Math.randFlt(-100, 100);
+        this.oldPos[1] = Math.randFlt(-100, 100);
+        this.oldPos[2] = Math.randFlt(-100, 100);
     };
 
     this.update = function()
@@ -51,7 +51,7 @@ Flurry.Smoke = function()
 
         var state   = Flurry.GLSaver.State,
             config  = Flurry.GLSaver.Config,
-            starPos = state.star.pos.makeCopy();
+            starPos = Vector3F(state.star.pos);
 
         this.frame++;
 
@@ -62,24 +62,27 @@ Flurry.Smoke = function()
         }
         else if (state.time - this.lastParticleTime >= 1 / 121)
         {
-            var deltaPos = starPos.delta(this.oldPos, 5);
+            var dx = this.oldPos[0] - starPos[0],
+                dy = this.oldPos[1] - starPos[1],
+                dz = this.oldPos[2] - starPos[2],
+                deltaPos = new Float32Array([dx * 5, dy * 5, dz * 5]);
 
             for (var i = 0; i < state.numStreams; i++)
             {
-                this.particles[this.nextParticle].deltaPos[0][this.nextSubParticle] = deltaPos.x;
-                this.particles[this.nextParticle].deltaPos[1][this.nextSubParticle] = deltaPos.y;
-                this.particles[this.nextParticle].deltaPos[2][this.nextSubParticle] = deltaPos.z;
-                this.particles[this.nextParticle].pos[0][this.nextSubParticle] = starPos.x;
-                this.particles[this.nextParticle].pos[1][this.nextSubParticle] = starPos.y;
-                this.particles[this.nextParticle].pos[2][this.nextSubParticle] = starPos.z;
-                this.particles[this.nextParticle].oldPos[0][this.nextSubParticle] = starPos.x;
-                this.particles[this.nextParticle].oldPos[1][this.nextSubParticle] = starPos.y;
-                this.particles[this.nextParticle].oldPos[2][this.nextSubParticle] = starPos.z;
+                this.particles[this.nextParticle].deltaPos[0][this.nextSubParticle] = deltaPos[0];
+                this.particles[this.nextParticle].deltaPos[1][this.nextSubParticle] = deltaPos[1];
+                this.particles[this.nextParticle].deltaPos[2][this.nextSubParticle] = deltaPos[2];
+                this.particles[this.nextParticle].pos[0][this.nextSubParticle]      = starPos[0];
+                this.particles[this.nextParticle].pos[1][this.nextSubParticle]      = starPos[1];
+                this.particles[this.nextParticle].pos[2][this.nextSubParticle]      = starPos[2];
+                this.particles[this.nextParticle].oldPos[0][this.nextSubParticle]   = starPos[0];
+                this.particles[this.nextParticle].oldPos[1][this.nextSubParticle]   = starPos[1];
+                this.particles[this.nextParticle].oldPos[2][this.nextSubParticle]   = starPos[2];
 
-                var streamSpeedCoherenceFactor = Math.max( 0, 1 + Math.randBell(0.25*config.incohesion)),
-                    dX  = this.particles[this.nextParticle].position[0][this.nextSubParticle] - state.spark[i].pos.x,
-                    dY  = this.particles[this.nextParticle].position[1][this.nextSubParticle] - state.spark[i].pos.y,
-                    dZ  = this.particles[this.nextParticle].position[2][this.nextSubParticle] - state.spark[i].pos.z,
+                var streamSpeedCoherenceFactor = Math.max( 0, 1 + Math.randBell(0.25*config.incohesion) ),
+                    dX  = this.particles[this.nextParticle].position[0][this.nextSubParticle] - state.spark[i].pos[0],
+                    dY  = this.particles[this.nextParticle].position[1][this.nextSubParticle] - state.spark[i].pos[1],
+                    dZ  = this.particles[this.nextParticle].position[2][this.nextSubParticle] - state.spark[i].pos[2],
                     rsq = (dX*dX+dY*dY+dZ*dZ),
                     f   = config.streamSpeed * streamSpeedCoherenceFactor,
                     mag = f / Math.sqrt(rsq);
@@ -87,12 +90,12 @@ Flurry.Smoke = function()
                 this.particles[this.nextParticle].deltaPos[0][this.nextSubParticle] -= (dX * mag);
                 this.particles[this.nextParticle].deltaPos[1][this.nextSubParticle] -= (dY * mag);
                 this.particles[this.nextParticle].deltaPos[2][this.nextSubParticle] -= (dZ * mag);
-                this.particles[this.nextParticle].color[0][this.nextSubParticle] = state.spark[i].color.r * (1 + Math.randBell(config.colorIncoherence));
-                this.particles[this.nextParticle].color[1][this.nextSubParticle] = state.spark[i].color.g * (1 + Math.randBell(config.colorIncoherence));
-                this.particles[this.nextParticle].color[2][this.nextSubParticle] = state.spark[i].color.b * (1 + Math.randBell(config.colorIncoherence));
+                this.particles[this.nextParticle].color[0][this.nextSubParticle] = state.spark[i].color[0] * (1 + Math.randBell(config.colorIncoherence));
+                this.particles[this.nextParticle].color[1][this.nextSubParticle] = state.spark[i].color[1] * (1 + Math.randBell(config.colorIncoherence));
+                this.particles[this.nextParticle].color[2][this.nextSubParticle] = state.spark[i].color[2] * (1 + Math.randBell(config.colorIncoherence));
                 this.particles[this.nextParticle].color[3][this.nextSubParticle] = 0.85 * (1.0 + Math.randBell(0.5 * config.colorIncoherence));
-                this.particles[this.nextParticle].time[this.nextSubParticle] = state.time;
-                this.particles[this.nextParticle].dead[this.nextSubParticle] = 0;
+                this.particles[this.nextParticle].time[this.nextSubParticle]  = state.time;
+                this.particles[this.nextParticle].dead[this.nextSubParticle]  = 0;
                 this.particles[this.nextParticle].frame[this.nextSubParticle] = (Math.random() * 35565) & 63;
                 this.nextSubParticle++;
 
@@ -112,7 +115,7 @@ Flurry.Smoke = function()
             this.lastParticleTime = state.time;
         }
 
-        this.oldPos = state.star.pos.makeCopy();
+        this.oldPos = Vector3F(state.star.pos);
 
         var frameRate         = state.frame / state.time,
             frameRateModifier = 42.5 / frameRate;
@@ -129,9 +132,9 @@ Flurry.Smoke = function()
 
             for (var j = 0; j < state.numStreams; j++)
             {
-                dX  = this.particles[i].pos[0][k] - state.spark[j].pos.x;
-                dY  = this.particles[i].pos[1][k] - state.spark[j].pos.y;
-                dZ  = this.particles[i].pos[2][k] - state.spark[j].pos.z;
+                dX  = this.particles[i].pos[0][k] - state.spark[j].pos[0];
+                dY  = this.particles[i].pos[1][k] - state.spark[j].pos[1];
+                dZ  = this.particles[i].pos[2][k] - state.spark[j].pos[2];
                 rsq = (dX*dX+dY*dY+dZ*dZ);
                 f   = (config.gravity / rsq) * frameRateModifier;
 
@@ -169,6 +172,8 @@ Flurry.Smoke = function()
 
     this.draw = function()
     {
+        'use strict';
+
         var svi = 0,
             sci = 0,
             sti = 0,

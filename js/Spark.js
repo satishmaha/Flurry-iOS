@@ -6,17 +6,22 @@ Flurry.Spark = function()
 {
     'use strict';
 
-    /** @type {Vector3} */
-    this.pos      = new Vector3();
-    /** @type {Vector3} */
-    this.deltaPos = new Vector3();
-    /** @type {Color} */
-    this.color    = new Color();
+    /** @type {Float32Array} */
+    this.pos      = Vector3F();
+    /** @type {Float32Array} */
+    this.deltaPos = Vector3F();
+    /** @type {Float32Array} */
+    this.color    = Vector4F();
     /** @type {number} */
     this.mystery  = 0;
 
-    this.init        = function() { /* TODO stub */ };
-    this.update      = function() { /* TODO stub */ };
+    this.init = function()
+    {
+        'use strict';
+
+    };
+
+    this.update = function() { /* TODO stub */ };
     this.updateColor = function() { /* TODO stub */ };
-    this.draw        = function() { /* TODO stub */ }
+    this.draw = function() { /* TODO stub */ }
 };

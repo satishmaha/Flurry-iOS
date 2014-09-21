@@ -8,14 +8,14 @@ Flurry.Particle = function()
 
     /** @type {number} */
     this.frame    = 0;
-    /** @type {Vector3} */
-    this.pos      = new Vector3();
-    /** @type {Vector3} */
-    this.oldPos   = new Vector3();
-    /** @type {Vector3} */
-    this.deltaPos = new Vector3();
-    /** @type {Color} */
-    this.color    = new Color();
+    /** @type {Float32Array} */
+    this.pos      = Vector3F();
+    /** @type {Float32Array} */
+    this.oldPos   = Vector3F();
+    /** @type {Float32Array} */
+    this.deltaPos = Vector3F();
+    /** @type {Float32Array} */
+    this.color    = Vector4C();
 
     this.init = function()
     {
@@ -27,35 +27,35 @@ Flurry.Particle = function()
             r1 = Math.random() * 35565,
             r2 = Math.random() * 35565;
 
-        this.oldPos.z = Math.randFlt(2500, 22500);
-        this.oldPos.x = ((r1 % screenW) - screenW * 0.5) / (screenW / this.oldPos.z);
-        this.oldPos.y = (screenH * 0.5 - (r2 % screenH)) / (screenW / this.oldPos.z);
+        this.oldPos[2] = Math.randFlt(2500, 22500);
+        this.oldPos[0] = ((r1 % screenW) - screenW * 0.5) / (screenW / this.oldPos[2]);
+        this.oldPos[1] = (screenH * 0.5 - (r2 % screenH)) / (screenW / this.oldPos[2]);
 
-        this.deltaPos.x = 0;
-        this.deltaPos.y = 0;
-        this.deltaPos.z = -state.starSpeed;
+        this.deltaPos[0] = 0;
+        this.deltaPos[1] = 0;
+        this.deltaPos[2] = -state.starSpeed;
 
-        this.pos.x = this.oldPos.x + this.deltaPos.x;
-        this.pos.y = this.oldPos.y + this.deltaPos.y;
-        this.pos.z = this.oldPos.z + this.deltaPos.z;
+        this.pos[0] = this.oldPos[0] + this.deltaPos[0];
+        this.pos[1] = this.oldPos[1] + this.deltaPos[1];
+        this.pos[2] = this.oldPos[2] + this.deltaPos[2];
 
-        this.color.r = Math.randFlt(0.125, 1.0);
-        this.color.g = Math.randFlt(0.125, 1.0);
-        this.color.b = Math.randFlt(0.125, 1.0);
-        this.frame   = 0;
+        this.color[0] = Math.randFlt(0.125, 1.0);
+        this.color[1] = Math.randFlt(0.125, 1.0);
+        this.color[2] = Math.randFlt(0.125, 1.0);
+        this.frame    = 0;
     };
 
     this.update = function()
     {
         'use strict';
 
-        this.oldPos.x = this.pos.x;
-        this.oldPos.y = this.pos.y;
-        this.oldPos.z = this.pos.z;
+        this.oldPos[0] = this.pos[0];
+        this.oldPos[1] = this.pos[1];
+        this.oldPos[2] = this.pos[2];
 
-        this.pos.x += this.deltaPos.x * Flurry.State.deltaTime;
-        this.pos.y += this.deltaPos.y * Flurry.State.deltaTime;
-        this.pos.z += this.deltaPos.z * Flurry.State.deltaTime;
+        this.pos[0] += this.deltaPos[0] * Flurry.State.deltaTime;
+        this.pos[1] += this.deltaPos[1] * Flurry.State.deltaTime;
+        this.pos[2] += this.deltaPos[2] * Flurry.State.deltaTime;
     };
 
     /** @returns {*} */
@@ -66,14 +66,14 @@ Flurry.Particle = function()
         var state   = Flurry.GLSaver.State,
             screenW = Flurry.canvas.clientWidth,
             screenH = Flurry.canvas.clientHeight,
-            screenX = (this.pos.x * screenW / this.pos.z) + screenW * 0.5,
-            screenY = (this.pos.y * screenW / this.pos.z) + screenH * 0.5;
+            screenX = (this.pos[0] * screenW / this.pos[2]) + screenW * 0.5,
+            screenY = (this.pos[1] * screenW / this.pos[2]) + screenH * 0.5;
 
-        var oldScreenX = (this.oldPos.x * screenW / this.oldPos.z) + screenW * 0.5,
-            oldScreenY = (this.oldPos.y * screenW / this.oldPos.z) + screenH * 0.5;
+        var oldScreenX = (this.oldPos[0] * screenW / this.oldPos[2]) + screenW * 0.5,
+            oldScreenY = (this.oldPos[1] * screenW / this.oldPos[2]) + screenH * 0.5;
 
         // Near clip
-        if (this.pos.z < 100)
+        if (this.pos[2] < 100)
             return this.init();
 
         // Side clip
@@ -84,21 +84,21 @@ Flurry.Particle = function()
         if (screenY > screenH + 100 || screenY < -100)
             return this.init();
 
-        state.starfieldColor[state.starfieldColorIdx++] = this.color.r;
-        state.starfieldColor[state.starfieldColorIdx++] = this.color.g;
-        state.starfieldColor[state.starfieldColorIdx++] = this.color.b;
+        state.starfieldColor[state.starfieldColorIdx++] = this.color[0];
+        state.starfieldColor[state.starfieldColorIdx++] = this.color[1];
+        state.starfieldColor[state.starfieldColorIdx++] = this.color[2];
         state.starfieldColor[state.starfieldColorIdx++] = 1.0;
-        state.starfieldColor[state.starfieldColorIdx++] = this.color.r;
-        state.starfieldColor[state.starfieldColorIdx++] = this.color.g;
-        state.starfieldColor[state.starfieldColorIdx++] = this.color.b;
+        state.starfieldColor[state.starfieldColorIdx++] = this.color[0];
+        state.starfieldColor[state.starfieldColorIdx++] = this.color[1];
+        state.starfieldColor[state.starfieldColorIdx++] = this.color[2];
         state.starfieldColor[state.starfieldColorIdx++] = 1.0;
-        state.starfieldColor[state.starfieldColorIdx++] = this.color.r;
-        state.starfieldColor[state.starfieldColorIdx++] = this.color.g;
-        state.starfieldColor[state.starfieldColorIdx++] = this.color.b;
+        state.starfieldColor[state.starfieldColorIdx++] = this.color[0];
+        state.starfieldColor[state.starfieldColorIdx++] = this.color[1];
+        state.starfieldColor[state.starfieldColorIdx++] = this.color[2];
         state.starfieldColor[state.starfieldColorIdx++] = 1.0;
-        state.starfieldColor[state.starfieldColorIdx++] = this.color.r;
-        state.starfieldColor[state.starfieldColorIdx++] = this.color.g;
-        state.starfieldColor[state.starfieldColorIdx++] = this.color.b;
+        state.starfieldColor[state.starfieldColorIdx++] = this.color[0];
+        state.starfieldColor[state.starfieldColorIdx++] = this.color[1];
+        state.starfieldColor[state.starfieldColorIdx++] = this.color[2];
         state.starfieldColor[state.starfieldColorIdx++] = 1.0;
 
         this.frame++;
@@ -113,8 +113,8 @@ Flurry.Particle = function()
             u1   = u0 + 0.125,
             v1   = v0 + 0.125,
             size = (3500 * (screenW / 1024)),
-            w    = Math.max(1.5, size / this.pos.z),
-            ow   = Math.max(1.5, size / this.oldPos.z);
+            w    = Math.max(1.5, size / this.pos[2]),
+            ow   = Math.max(1.5, size / this.oldPos[2]);
 
         var s  = d ? w  / d : 0.0,
             os = d ? ow / d : 0.0;
