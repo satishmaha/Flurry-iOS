@@ -20,33 +20,33 @@ var ArrayOf = function(proto, count)
 };
 
 /**
- * Creates an array wherein each element is an equivalent of an AltiVec unsigned
+ * Creates an array wherein each element is an equivalent of an Vector4 unsigned
  * int vector
  * @param count
  * @returns {Uint16Array[]}
  */
-ArrayOf.AltiVecInt = function(count)
+ArrayOf.Vector4I = function(count)
 {
     var array = new Array(count);
 
     for (var i = 0; i < count; i++)
-        array[i] = AltiVec.int();
+        array[i] = Vector4I();
 
     return array;
 };
 
 /**
- * Creates an array wherein each element is an equivalent of an AltiVec float
+ * Creates an array wherein each element is an equivalent of an Vector4 float
  * vector
  * @param count
  * @returns {Float32Array[]}
  */
-ArrayOf.AltiVecFloat = function(count)
+ArrayOf.Vector4F = function(count)
 {
     var array = new Array(count);
 
     for (var i = 0; i < count; i++)
-        array[i] = AltiVec.float();
+        array[i] = Vector4F();
 
     return array;
 };

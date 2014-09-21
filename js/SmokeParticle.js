@@ -7,18 +7,18 @@ Flurry.SmokeParticle = function()
     'use strict';
 
     /** @type {Float32Array[]} */
-    this.color    = ArrayOf.AltiVecFloat(4);
+    this.color    = ArrayOf.Vector4F(4);
     /** @type {Float32Array[]} */
-    this.pos      = ArrayOf.AltiVecFloat(3);
+    this.pos      = ArrayOf.Vector4F(3);
     /** @type {Float32Array[]} */
-    this.oldPos   = ArrayOf.AltiVecFloat(3);
+    this.oldPos   = ArrayOf.Vector4F(3);
     /** @type {Float32Array[]} */
-    this.deltaPos = ArrayOf.AltiVecFloat(3);
+    this.deltaPos = ArrayOf.Vector4F(3);
 
     /** @type {Uint32Array} */
-    this.dead  = AltiVec.int();
+    this.dead  = Vector4I();
     /** @type {Uint32Array} */
-    this.frame = AltiVec.int();
+    this.frame = Vector4I();
     /** @type {Float32Array} */
-    this.time  = AltiVec.float();
+    this.time  = Vector4F();
 };
