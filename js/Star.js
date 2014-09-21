@@ -6,8 +6,6 @@ Flurry.Star = function()
 {
     'use strict';
 
-    const BIG_MYSTERY = 1800;
-
     /** @type {Float32Array} */
     this.pos      = Vector3F();
     /** @type {number} */
@@ -21,9 +19,8 @@ Flurry.Star = function()
     {
         'use strict';
 
-        this.pos[0] = Math.randFlt(-10000, 10000);
-        this.pos[1] = Math.randFlt(-10000, 10000);
-        this.pos[2] = Math.randFlt(-10000, 10000);
+        for (var i = 0; i < 3; i++)
+            this.pos[i] = Math.randFlt(-10000, 10000);
 
         this.rotSpeed = Math.randFlt(0.4, 0.9);
         this.mystery  = Math.randFlt(0.0, 10.0);

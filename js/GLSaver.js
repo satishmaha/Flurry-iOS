@@ -5,9 +5,9 @@
 /**
  * Namespace for the main screensaver/GL logic
  * @type {object}
+ * @namespace
  */
 Flurry.GLSaver = {};
-
 
 /**
  * @private
@@ -15,27 +15,6 @@ Flurry.GLSaver = {};
  * @type {number}
  */
 Flurry.GLSaver.timeCounter = 0;
-
-
-/**
- * @enum {number}
- * @readonly
- */
-Flurry.GLSaver.ColorModes = {
-    red        : 0,
-    magenta    : 1,
-    blue       : 2,
-    cyan       : 3,
-    green      : 4,
-    yellow     : 5,
-    slowCyclic : 6,
-    cyclic     : 7,
-    tiedye     : 8,
-    rainbow    : 9,
-    white      : 10,
-    multi      : 11,
-    dark       : 12
-};
 
 /** @namespace */
 Flurry.GLSaver.Config = {
@@ -65,8 +44,8 @@ Flurry.GLSaver.State.spark     = ArrayOf(Flurry.Spark, 64);
 Flurry.GLSaver.State.smoke     = new Flurry.Smoke();
 /** @type {Flurry.Star} */
 Flurry.GLSaver.State.star      = new Flurry.Star();
-/** @type {Flurry.GLSaver.ColorModes} */
-Flurry.GLSaver.State.colorMode = Flurry.GLSaver.ColorModes.cyclic;
+/** @type {ColorModes} */
+Flurry.GLSaver.State.colorMode = ColorModes.cyclic;
 /** @type {Float32Array} */
 Flurry.GLSaver.State.starfieldColor    = new Float32Array(MAX_PARTICLES * 4 * 4);
 /** @type {Float32Array} */

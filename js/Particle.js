@@ -24,8 +24,8 @@ Flurry.Particle = function()
         var state   = Flurry.GLSaver.State,
             screenW = Flurry.canvas.clientWidth,
             screenH = Flurry.canvas.clientHeight,
-            r1 = Math.random() * 35565,
-            r2 = Math.random() * 35565;
+            r1 = Math.randClib(),
+            r2 = Math.randClib();
 
         this.oldPos[2] = Math.randFlt(2500, 22500);
         this.oldPos[0] = ((r1 % screenW) - screenW * 0.5) / (screenW / this.oldPos[2]);
@@ -39,26 +39,23 @@ Flurry.Particle = function()
         this.pos[1] = this.oldPos[1] + this.deltaPos[1];
         this.pos[2] = this.oldPos[2] + this.deltaPos[2];
 
-        this.color[0] = Math.randFlt(0.125, 1.0);
-        this.color[1] = Math.randFlt(0.125, 1.0);
-        this.color[2] = Math.randFlt(0.125, 1.0);
-        this.frame    = 0;
+        for (var i = 0; i < 3; i++)
+            this.color[i] = Math.randFlt(0.125, 1.0);
+
+        this.frame = 0;
     };
 
     this.update = function()
     {
         'use strict';
 
-        this.oldPos[0] = this.pos[0];
-        this.oldPos[1] = this.pos[1];
-        this.oldPos[2] = this.pos[2];
-
-        this.pos[0] += this.deltaPos[0] * Flurry.State.deltaTime;
-        this.pos[1] += this.deltaPos[1] * Flurry.State.deltaTime;
-        this.pos[2] += this.deltaPos[2] * Flurry.State.deltaTime;
+        for (var i = 0; i < 3; i++)
+        {
+            this.oldPos[i]  = this.pos[i];
+            this.pos[i]    += this.deltaPos[i] * Flurry.State.deltaTime;
+        }
     };
 
-    /** @returns {*} */
     this.draw = function()
     {
         'use strict';

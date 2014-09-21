@@ -40,9 +40,8 @@ Flurry.Smoke = function()
         this.firstTime = true;
         this.frame     = 0;
 
-        this.oldPos[0] = Math.randFlt(-100, 100);
-        this.oldPos[1] = Math.randFlt(-100, 100);
-        this.oldPos[2] = Math.randFlt(-100, 100);
+        for (var i = 0; i < 3; i++)
+            this.oldPos[i] = Math.randFlt(-100, 100);
     };
 
     this.update = function()
@@ -96,7 +95,7 @@ Flurry.Smoke = function()
                 this.particles[this.nextParticle].color[3][this.nextSubParticle] = 0.85 * (1.0 + Math.randBell(0.5 * config.colorIncoherence));
                 this.particles[this.nextParticle].time[this.nextSubParticle]  = state.time;
                 this.particles[this.nextParticle].dead[this.nextSubParticle]  = 0;
-                this.particles[this.nextParticle].frame[this.nextSubParticle] = (Math.random() * 35565) & 63;
+                this.particles[this.nextParticle].frame[this.nextSubParticle] = (Math.randClib()) & 63;
                 this.nextSubParticle++;
 
                 if (this.nextSubParticle == 4)

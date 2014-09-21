@@ -50,3 +50,30 @@ ArrayOf.Vector4F = function(count)
 
     return array;
 };
+
+ArrayOf.ByteMatrix2 = function(a, b)
+{
+    "use strict";
+    var matrix = new Array(a);
+
+    for (var i = 0; i < a; i++)
+        matrix[i] = new Uint8Array(b);
+
+    return matrix;
+};
+
+ArrayOf.ByteMatrix3 = function(a, b, c)
+{
+    "use strict";
+    var matrix = new Array(a);
+
+    for (var i = 0; i < a; i++)
+    {
+        matrix[i] = new Array(b);
+
+        for (var j = 0; j < b; j++)
+            matrix[i][j] = new Uint8Array(c);
+    }
+
+    return matrix;
+};

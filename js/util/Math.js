@@ -16,6 +16,12 @@ Math.fastDist2D = function(x, y)
     return (x + y - (mn * 0.5) - (mn * 0.25) + (mn * 0.0625));
 };
 
+Math.randClib = function()
+{
+    "use strict";
+    return Math.floor( Math.random() * 32767 );
+};
+
 Math.randFlt = function(min, max)
 {
     return (min + (max - min) * Math.random());
