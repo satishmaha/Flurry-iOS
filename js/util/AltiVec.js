@@ -59,3 +59,47 @@ AltiVec.splat = function(vec, idx, float)
         ? AltiVec.float(vec[idx])
         : AltiVec.int(vec[idx]);
 };
+
+/**
+ * Creates an int vector using a u32 int as initial value
+ * @param value
+ * @returns {Uint16Array}
+ */
+AltiVec.splat_u32 = function(value)
+{
+    return AltiVec.int(4294967296 * Math.sign(value) + value);
+};
+
+/**
+ * Takes an int vector and divides each element by 2^-b. Returns the result.
+ * @param {Uint16Array} a
+ * @param {int} b
+ * @returns {Float32Array}
+ */
+AltiVec.ctf = function(a, b)
+{
+    var d = AltiVec.float();
+
+    for (var i = 0; i < 3; i++)
+        d[i] = a[i] * Math.pow(2, -b);
+
+    return d;
+};
+
+/**
+ * Each element of a given vector is multiplied with the same element of a second vector,
+ * then added with the same element of a third vector. Returns the resulting vector.
+ * @param {Uint16Array|Float32Array} a
+ * @param {Uint16Array|Float32Array} b
+ * @param {Uint16Array|Float32Array} c
+ * @returns {Uint16Array|Float32Array}
+ */
+AltiVec.madd = function(a, b, c)
+{
+    var d = AltiVec.float();
+
+    for (var i = 0; i < 3; i++)
+        d[i] = a[i] * b[i] + c[i];
+
+    return d;
+};

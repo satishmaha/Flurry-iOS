@@ -1,15 +1,20 @@
 // By Roy Curtis
 // Based off original code from https://github.com/calumr/flurry
 
+/** @constructor */
 Flurry.Star = function()
 {
     'use strict';
 
     const BIG_MYSTERY = 1800;
 
+    /** @type {Vector3} */
     this.pos      = new Vector3();
+    /** @type {number} */
     this.mystery  = 0.0;
+    /** @type {number} */
     this.rotSpeed = 0.0;
+    /** @type {boolean} */
     this.ate      = false;
 
     this.init = function()
@@ -88,4 +93,4 @@ Flurry.Star = function()
 
         // TODO: Continue GL code here using shader uniform
     };
-}
+};

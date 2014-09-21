@@ -1,14 +1,20 @@
 // By Roy Curtis
 // Based off original code from https://github.com/calumr/flurry
 
+/** @constructor */
 Flurry.Particle = function()
 {
     'use strict';
 
+    /** @type {number} */
     this.frame    = 0;
+    /** @type {Vector3} */
     this.pos      = new Vector3();
+    /** @type {Vector3} */
     this.oldPos   = new Vector3();
+    /** @type {Vector3} */
     this.deltaPos = new Vector3();
+    /** @type {Color} */
     this.color    = new Color();
 
     this.init = function()
@@ -142,4 +148,4 @@ Flurry.Particle = function()
         state.starfieldVertices[state.starfieldVerticesIdx++] = oldScreenX - dXm - dYos;
         state.starfieldVertices[state.starfieldVerticesIdx++] = oldScreenY - dYm + dXos;
     }
-}
+};

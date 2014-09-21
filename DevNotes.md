@@ -1,3 +1,46 @@
+## Note 6
+
+After working on the AltiVec-based vector code for Smoke.js for a while, I found myself
+trying to re-implement more and more complex methods from AltiVec. I have found it too
+difficult to continue and will instead try to port the scalar based code from Flurry
+(non-PPC).
+
+I will leave in the vector code as a commit, but not in later commits.
+
+## Note 5
+
+I rely very heavily on my IDE to code quicker. I was having an issue with WebStorm being
+unable to determine the correct members of an object, if that object itself was a member
+in a container object.
+
+After some trial-and-error, I was finally able to determine that the IDE did not like
+"static" container objects being defined with a curly brace literal. For example:
+
+```javascript
+/** @namespace */
+Flurry.GLSaver.State = {
+    /** @type {Flurry.Smoke} */
+    smoke : new Flurry.Smoke();
+};
+
+var x = Flurry.GLSaver.State.smoke.oldPos;
+```
+
+WebStorm would recognize `oldPos` as a member in syntax coloring, but internally it did
+not recognize the type of `.smoke` as `Flurry.Smoke`. This broke auto-complete and Go-To
+Declaration, even with the `@type` JSDoc tag. However, doing this:
+
+```javascript
+/** @namespace */
+Flurry.GLSaver.State = {};
+/** @type {Flurry.Smoke} */
+Flurry.GLSaver.State.smoke = new Flurry.Smoke();
+```
+
+Completely fixed it for me. Now auto-complete was properly working for `Flurry.GLSaver.
+State.smoke.*`. I am not sure if I was using improper Javascript or JSDoc convention, or
+if WebStorm has a bug. The code is a little less cleaner with this method, subjectively.
+
 ## Note 4
 
 As I begin implementing the GL rendering code itself, I realize how much the C code is

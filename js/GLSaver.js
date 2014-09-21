@@ -18,8 +18,8 @@ Flurry.GLSaver.timeCounter = 0;
 
 
 /**
- * @enum
- * @type {object.<string, number>}
+ * @enum {number}
+ * @readonly
  */
 Flurry.GLSaver.ColorModes = {
     red        : 0,
@@ -37,10 +37,7 @@ Flurry.GLSaver.ColorModes = {
     dark       : 12
 };
 
-/**
- * @static
- * @type {object.<string, number>}
- */
+/** @namespace */
 Flurry.GLSaver.Config = {
     colorIncoherence : 0.15,
     drag             : 0.0,
@@ -57,36 +54,46 @@ Flurry.GLSaver.Config = {
     streamSize       : 25000.0
 };
 
-/**
- * @static
- * @type {object.<string, *>}
- */
-Flurry.GLSaver.State = {
-    /** @type {Flurry.Particle[]} */
-    particles : ArrayOf(Flurry.Particle, MAX_PARTICLES),
-    /** @type {Flurry.Spark[]} */
-    spark     : ArrayOf(Flurry.Spark, 64),
-    smoke     : null,
-    star      : null,
 
-    flurryRandomSeed : 0,
-    currentColorMode : GLSaver.ColorModes.cyclic,
+/** @namespace */
+Flurry.GLSaver.State = {};
+/** @type {Flurry.Particle[]} */
+Flurry.GLSaver.State.particles = ArrayOf(Flurry.Particle, MAX_PARTICLES);
+/** @type {Flurry.Spark[]} */
+Flurry.GLSaver.State.spark     = ArrayOf(Flurry.Spark, 64);
+/** @type {Flurry.Smoke} */
+Flurry.GLSaver.State.smoke     = new Flurry.Smoke();
+/** @type {Flurry.Star} */
+Flurry.GLSaver.State.star      = new Flurry.Star();
+/** @type {Flurry.GLSaver.ColorModes} */
+Flurry.GLSaver.State.colorMode = Flurry.GLSaver.ColorModes.cyclic;
+/** @type {Float32Array} */
+Flurry.GLSaver.State.starfieldColor    = new Float32Array(MAX_PARTICLES * 4 * 4);
+/** @type {Float32Array} */
+Flurry.GLSaver.State.starfieldVertices = new Float32Array(MAX_PARTICLES * 2 * 4);
+/** @type {Float32Array} */
+Flurry.GLSaver.State.starfieldTextures = new Float32Array(MAX_PARTICLES * 2 * 4);
+/** @type {number} */
+Flurry.GLSaver.State.starfieldColorIdx    = 0;
+/** @type {number} */
+Flurry.GLSaver.State.starfieldVerticesIdx = 0;
+/** @type {number} */
+Flurry.GLSaver.State.starfieldTexturesIdx = 0;
+/** @type {number} */
+Flurry.GLSaver.State.time      = 0; // fTime
+/** @type {number} */
+Flurry.GLSaver.State.randSeed  = 0;
+/** @type {number} */
+Flurry.GLSaver.State.oldTime   = 0; // fOldTime
+/** @type {number} */
+Flurry.GLSaver.State.deltaTime = 0; // fDeltaTime
+/** @type {number} */
+Flurry.GLSaver.State.frame     = 0; // dframe
+/** @type {number} */
+Flurry.GLSaver.State.streamExpansion = 0.0;
+/** @type {number} */
+Flurry.GLSaver.State.numStreams      = 0;
 
-    time      : 0,
-    oldTime   : 0,
-    deltaTime : 0,
-    frame     : 0,
-
-    streamExpansion : 0.0,
-    numStreams      : 0,
-
-    starfieldColor       : new Float32Array(MAX_PARTICLES * 4 * 4),
-    starfieldColorIdx    : 0,
-    starfieldVertices    : new Float32Array(MAX_PARTICLES * 2 * 4),
-    starfieldVerticesIdx : 0,
-    starfieldTextures    : new Float32Array(MAX_PARTICLES * 2 * 4),
-    starfieldTexturesIdx : 0
-};
 
 Flurry.GLSaver.setupOT = function()
 {
@@ -141,7 +148,7 @@ Flurry.GLSaver.setupGL = function()
     gl.clearColor(0, 0, 0, 1);
     gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
 
-    state.oldTime = GLSaver.timeSinceStart() + state.flurryRandomSeed;
+    state.oldTime = GLSaver.timeSinceStart() + state.randSeed;
 };
 
 Flurry.GLSaver.render = function() { /* TODO Stub */ };
