@@ -147,9 +147,9 @@ Flurry.Smoke = function()
                 deltaZ -= (dZ * mag);
             }
 
-            deltaX *= config.drag;
-            deltaY *= config.drag;
-            deltaZ *= config.drag;
+            deltaX *= state.drag;
+            deltaY *= state.drag;
+            deltaZ *= state.drag;
 
             if( (deltaX*deltaX+deltaY*deltaY+deltaZ*deltaZ) >= 25000000 )
             {

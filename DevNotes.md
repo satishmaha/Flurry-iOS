@@ -17,7 +17,6 @@ After some trial-and-error, I was finally able to determine that the IDE did not
 "static" container objects being defined with a curly brace literal. For example:
 
 ```javascript
-/** @namespace */
 Flurry.GLSaver.State = {
     /** @type {Flurry.Smoke} */
     smoke : new Flurry.Smoke();
@@ -31,7 +30,6 @@ not recognize the type of `.smoke` as `Flurry.Smoke`. This broke auto-complete a
 Declaration, even with the `@type` JSDoc tag. However, doing this:
 
 ```javascript
-/** @namespace */
 Flurry.GLSaver.State = {};
 /** @type {Flurry.Smoke} */
 Flurry.GLSaver.State.smoke = new Flurry.Smoke();

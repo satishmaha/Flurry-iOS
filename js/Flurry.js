@@ -3,7 +3,6 @@
 
 /**
  * The global object and namespace for the Flurry application
- * @type {object}
  */
 var Flurry = {};
 
@@ -15,17 +14,22 @@ Flurry.webgl = null;
 
 /**
  * Entry point for Flurry
- * @param {HTMLCanvasElement} canvasElement
+ * @param {string} canvasId
  */
-Flurry.main = function(canvasElement)
+Flurry.main = function(canvasId)
 {
     'use strict';
-    Flurry.canvas = document.getElementById(canvasElement);
+    Flurry.canvas = document.getElementById(canvasId);
 
     if ( !Flurry.initGL() )
         throw new Error("Could not initialize WebGL");
 
-    Flurry.render();
+    Flurry.Texture.create();
+    Flurry.GLSaver.resize();
+    Flurry.GLSaver.setupGL();
+
+    // Begin!
+    Flurry.GLSaver.render();
 };
 
 /**
@@ -46,23 +50,5 @@ Flurry.initGL = function()
     {
         return false;
     }
-};
-
-/**
- * Render loop for Flurry
- */
-Flurry.render = function()
-{
-    'use strict';
-
-    var gl = Flurry.webgl;
-
-    gl.clearColor(0.0, 0.2, 0.4, 1.0);
-    gl.enable(WebGLRenderingContext.DEPTH_TEST);
-    gl.depthFunc(WebGLRenderingContext.LEQUAL);
-    // IDE: WebStorm incorrectly thinks .clear is being given the wrong type
-    gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT | WebGLRenderingContext.DEPTH_BUFFER_BIT);
-
-    window.requestAnimationFrame(Flurry.render, null);
 };
 

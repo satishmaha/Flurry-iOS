@@ -110,6 +110,10 @@ Flurry.Texture.makeSmallTexture = function()
     Flurry.Texture.smooth();
 };
 
+/**
+ * @static
+ * @function
+ */
 Flurry.Texture.copySmallToBig = function(k, l)
 {
     'use strict';
@@ -122,6 +126,10 @@ Flurry.Texture.copySmallToBig = function(k, l)
     }
 };
 
+/**
+ * @static
+ * @function
+ */
 Flurry.Texture.averageLastAndFirst = function()
 {
     'use strict';

@@ -4,8 +4,6 @@
 
 /**
  * Namespace for the main screensaver/GL logic
- * @type {object}
- * @namespace
  */
 Flurry.GLSaver = {};
 
@@ -19,7 +17,6 @@ Flurry.GLSaver.timeCounter = 0;
 /** @namespace */
 Flurry.GLSaver.Config = {
     colorIncoherence : 0.15,
-    drag             : 0.0,
     gravity          : 1500000.0,
     incohesion       : 0.07,
     fieldCoherence   : 0,
@@ -69,6 +66,8 @@ Flurry.GLSaver.State.deltaTime = 0; // fDeltaTime
 /** @type {number} */
 Flurry.GLSaver.State.frame     = 0; // dframe
 /** @type {number} */
+Flurry.GLSaver.State.drag      = 0;
+/** @type {number} */
 Flurry.GLSaver.State.streamExpansion = 0.0;
 /** @type {number} */
 Flurry.GLSaver.State.numStreams      = 0;
@@ -89,11 +88,16 @@ Flurry.GLSaver.timeSinceStart = function()
     return (Date.now() - Flurry.GLSaver.timeCounter) / 1000;
 };
 
+/**
+ * @static
+ * @function
+ */
 Flurry.GLSaver.setupGL = function()
 {
     'use strict';
 
     var state = Flurry.GLSaver.State,
+        glx   = WebGLRenderingContext,
         gl    = Flurry.webgl;
 
     state.spark[0].mystery  = 1800 / 13;
@@ -111,24 +115,81 @@ Flurry.GLSaver.setupGL = function()
 
     for (var i = 0; i < MAX_SMOKE/4; i++)
         for (var k = 0; k < 4; k++)
-            state.particles[i].dead[k] = 1; // TRUE (FIXME ?)
+            state.particles[i].dead[k] = 1;
 
     for (i = 0; i < 12; i++)
         state.spark[i].update();
 
-    gl.disable(WebGLRenderingContext.DEPTH_TEST);
-    gl.disable(WebGLRenderingContext.CULL_FACE);
-    gl.enable(WebGLRenderingContext.BLEND);
+    Flurry.GLSaver.resize();
+
+    gl.disable(glx.DEPTH_TEST);
+    gl.disable(glx.CULL_FACE);
+    gl.enable(glx.BLEND);
     // FIXME alphaFunc is missing from webGL; fragment shader?
     // See http://stackoverflow.com/questions/7277047/alphafunctions-in-webgl
     // Investigate flat shading via vertex duplication
 
-    gl.viewport(0, 0, Flurry.canvas.clientWidth, Flurry.canvas.clientHeight);
     gl.clearColor(0, 0, 0, 1);
-    gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
+    gl.clear(glx.COLOR_BUFFER_BIT);
 
     state.oldTime = Flurry.GLSaver.timeSinceStart() + state.randSeed;
 };
 
-Flurry.GLSaver.render = function() { /* TODO Stub */ };
-Flurry.GLSaver.resize = function() { /* TODO Stub */ };
+/**
+ * @static
+ * @function
+ */
+Flurry.GLSaver.render = function()
+{
+    'use strict';
+    Flurry.GLSaver.resize();
+
+    var state  = Flurry.GLSaver.State,
+        config = Flurry.GLSaver.Config,
+        glx    = WebGLRenderingContext,
+        gl     = Flurry.webgl;
+
+    state.frame++;
+    state.oldTime   = state.time;
+    state.time      = Flurry.GLSaver.timeSinceStart() + state.randSeed;
+    state.deltaTime = state.time - state.oldTime;
+
+    state.drag = Math.pow(0.9965, state.deltaTime * 85);
+
+    for (var i = 0; i < config.numParticles; i++)
+        state.particles[i].update();
+
+    state.star.update();
+
+    for (i = 0; i < state.numStreams; i++)
+        state.spark[i].update();
+
+    state.smoke.update();
+
+    gl.blendFunc(glx.SRC_ALPHA, glx.ONE);
+    gl.enable(glx.TEXTURE_2D);
+    state.smoke.draw();
+    gl.disable(glx.TEXTURE_2D);
+
+    window.requestAnimationFrame(Flurry.GLSaver.render, null);
+};
+
+/**
+ * @seealso http://games.greggman.com/game/webgl-anti-patterns/
+ * @static
+ * @function
+ */
+Flurry.GLSaver.resize = function()
+{
+    'use strict';
+    var gl     = Flurry.webgl,
+        width  = gl.canvas.clientWidth,
+        height = gl.canvas.clientHeight;
+
+    if (gl.canvas.width != width || gl.canvas.height != height)
+    {
+        gl.canvas.width  = width;
+        gl.canvas.height = height;
+        gl.viewport(0, 0, width, height);
+    }
+};
