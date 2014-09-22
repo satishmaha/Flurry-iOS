@@ -15,17 +15,6 @@ Flurry.Star = function()
     /** @type {boolean} */
     this.ate      = false;
 
-    this.init = function()
-    {
-        'use strict';
-
-        for (var i = 0; i < 3; i++)
-            this.pos[i] = Math.randFlt(-10000, 10000);
-
-        this.rotSpeed = Math.randFlt(0.4, 0.9);
-        this.mystery  = Math.randFlt(0.0, 10.0);
-    };
-
     this.update = function()
     {
         'use strict';
@@ -68,26 +57,5 @@ Flurry.Star = function()
         this.pos[0] = tmpX2 * cr - tmpY3 * sr;
         this.pos[1] = tmpY3 * cr + tmpX2 * sr;
         this.pos[2] = tmpZ3;
-    };
-
-    this.draw = function()
-    {
-        'use strict';
-
-        var gl      = Flurry.webgl,
-            screenW = Flurry.canvas.clientWidth,
-            screenH = Flurry.canvas.clientHeight,
-            c       = 0.08;
-
-        if (!this.ate)
-            return;
-
-        var width   = 50000 * screenW / 1024,
-            z       = this.pos[2],
-            w       = width * 4 / z,
-            screenX = this.pos[0] * screenW / z + screenW * 0.5,
-            screenY = this.pos[1] * screenW / z + screenH * 0.5;
-
-        // TODO: Continue GL code here using shader uniform
     };
 };

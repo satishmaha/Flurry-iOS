@@ -15,14 +15,6 @@ Flurry.Spark = function()
     /** @type {number} */
     this.mystery  = 0;
 
-    this.init = function()
-    {
-        'use strict';
-
-        for (var i = 0; i < 3; i++)
-            this.pos[i] = Math.randFlt(-100, 100);
-    };
-
     this.update = function()
     {
         'use strict';
@@ -152,26 +144,4 @@ Flurry.Spark = function()
         this.color[1] = baseGreen + 0.0625 * (0.5 + Math.sin(((thisPointInRadians) + thisAngle)));
         this.color[2] = baseBlue  + 0.0625 * (0.5 + Math.cos((37.0 * (thisPointInRadians + thisAngle))));
     };
-
-    this.draw = function()
-    {
-        'use strict';
-
-        var state   = Flurry.GLSaver.State,
-            config  = Flurry.GLSaver.Config,
-            gl      = Flurry.webgl,
-            screenW = Flurry.canvas.clientWidth,
-            screenH = Flurry.canvas.clientHeight,
-
-            c     = 0.0625,
-            width = 60000 * screenW / 1024.0,
-            z     = this.pos[2],
-            sx    = this.pos[0] * screenW / z + screenW * 0.5,
-            sy    = this.pos[1] * screenW / z + screenH * 0.5,
-            w     = width * 4.0 / z,
-            screenx = sx,
-            screeny = sy;
-
-        // TODO: webgl
-    }
 };
