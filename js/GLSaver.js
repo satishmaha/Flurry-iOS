@@ -184,11 +184,6 @@ Flurry.GLSaver.setup = function()
 
     state.oldTime = glSaver.timeSinceStart() + state.randSeed;
 };
-    gl.uniformMatrix4fv(Uniforms.pMatrix, false, Matrices.projection);
-    gl.uniformMatrix4fv(Uniforms.modelView, false, Matrices.modelView);
-
-    state.oldTime = glSaver.timeSinceStart() + state.randSeed;
-};
 
 /**
  * @static
