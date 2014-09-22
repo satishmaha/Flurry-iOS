@@ -31,6 +31,7 @@ Flurry.Star = function()
         'use strict';
 
         var state         = Flurry.GLSaver.State,
+            config        = Flurry.GLSaver.Config,
             rotsPerSecond = (2*Math.PI*12/MAX_ANGLES) * this.rotSpeed,
             thisAngle     = state.time * rotsPerSecond;
 
@@ -59,7 +60,7 @@ Flurry.Star = function()
             tmpZ2 = tmpZ1 * cr + tmpX1 * sr,
             // tmpX3 = tmpX2,
             tmpY3 = tmpY1 * cr - tmpZ2 * sr,
-            tmpZ3 = tmpZ2 * cr + tmpY1 * sr + state.seraphDistance;
+            tmpZ3 = tmpZ2 * cr + tmpY1 * sr + config.seraphDistance;
 
         rot = thisAngle * 2.501 + 85.01 * this.mystery / BIG_MYSTERY;
         cr  = Math.cos(rot);

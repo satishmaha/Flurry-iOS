@@ -188,7 +188,7 @@ Flurry.Smoke = function()
             screenRatio = screenW / 1024,
             wslash2     = screenW * 0.5,
             hslash2     = screenH * 0.5,
-            width       = (state.streamSize + 2.5 * state.streamExpansion) * screenRatio;
+            width       = (config.streamSize + 2.5 * state.streamExpansion) * screenRatio;
 
         for (var i = 0; i < MAX_SMOKE / 4; i++)
         for (var k = 0; k < 4; k++)
@@ -285,14 +285,36 @@ Flurry.Smoke = function()
             svi++;
         }
 
-        // TODO: Figure out GL code
-//        glColorPointer(4,GL_FLOAT,0,s->seraphimColors);
-//        glVertexPointer(2,GL_FLOAT,0,s->seraphimVertices);
-//        glTexCoordPointer(2,GL_FLOAT,0,s->seraphimTextures);
+        // Flatten seraphimVertices
+        // TODO: Optimize!! This is a rushed implementation...
+        var seraphimVerticesFlat = new Float32Array((MAX_SMOKE * 2 + 1) * 4);
+        for (i = 0; i < (MAX_SMOKE * 2 + 1); i++)
+        {
+            var offset = i * 4;
+            seraphimVerticesFlat[offset+0] = this.seraphimVertices[i][0];
+            seraphimVerticesFlat[offset+1] = this.seraphimVertices[i][1];
+            seraphimVerticesFlat[offset+2] = this.seraphimVertices[i][2];
+            seraphimVerticesFlat[offset+3] = this.seraphimVertices[i][3];
+        }
 
         gl.bindBuffer(glx.ARRAY_BUFFER, Buffers.vertPos);
-        gl.bufferData(glx.ARRAY_BUFFER, this.seraphimVertices, glx.STATIC_DRAW);
+        gl.bufferData(glx.ARRAY_BUFFER, seraphimVerticesFlat, glx.STATIC_DRAW);
         gl.vertexAttribPointer(Attributes.vertPos, 2, glx.FLOAT, false, 0, 0);
+
+        var seraphimColorsFlat = new Float32Array((MAX_SMOKE * 4 + 1) * 4);
+        for (i = 0; i < (MAX_SMOKE * 4 + 1); i++)
+        {
+            offset = i * 4;
+            seraphimColorsFlat[offset+0] = this.seraphimColors[i][0];
+            seraphimColorsFlat[offset+1] = this.seraphimColors[i][1];
+            seraphimColorsFlat[offset+2] = this.seraphimColors[i][2];
+            seraphimColorsFlat[offset+3] = this.seraphimColors[i][3];
+        }
+
+        gl.bindBuffer(glx.ARRAY_BUFFER, Buffers.vertCol);
+        gl.bufferData(glx.ARRAY_BUFFER, seraphimColorsFlat, glx.STATIC_DRAW);
+        gl.vertexAttribPointer(Attributes.vertCol, 4, glx.FLOAT, false, 0, 0);
+
         gl.drawArrays(WebGLRenderingContext.TRIANGLE_STRIP, 0, si * 4);
     };
 };

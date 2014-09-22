@@ -14,7 +14,6 @@ Flurry.GLSaver = {};
  */
 Flurry.GLSaver.timeCounter = 0;
 
-/** @namespace */
 Flurry.GLSaver.Config = {
     colorIncoherence : 0.15,
     gravity          : 1500000.0,
@@ -29,7 +28,6 @@ Flurry.GLSaver.Config = {
     streamSize       : 25000.0
 };
 
-/** @namespace */
 Flurry.GLSaver.State = {};
 /** @type {Flurry.Spark[]} */
 Flurry.GLSaver.State.spark     = ArrayOf(Flurry.Spark, 64);
@@ -140,12 +138,7 @@ Buffers.texCoord = null;
 Flurry.GLSaver.setupBuffers = function()
 {
     'use strict';
-    var glSaver = Flurry.GLSaver,
-        state   = glSaver.State,
-        glx     = WebGLRenderingContext,
-        gl      = Flurry.webgl,
-        width   = gl.canvas.clientWidth,
-        height  = gl.canvas.clientHeight;
+    var gl = Flurry.webgl;
 
     Buffers.vertPos  = gl.createBuffer();
     Buffers.vertCol  = gl.createBuffer();
@@ -162,9 +155,7 @@ Flurry.GLSaver.setup = function()
     var glSaver = Flurry.GLSaver,
         state   = glSaver.State,
         glx     = WebGLRenderingContext,
-        gl      = Flurry.webgl,
-        width   = gl.canvas.clientWidth,
-        height  = gl.canvas.clientHeight;
+        gl      = Flurry.webgl;
 
     state.smoke.init();
     state.star.init();
@@ -191,8 +182,8 @@ Flurry.GLSaver.setup = function()
     gl.clearColor(0, 0, 0, 1);
     gl.clear(glx.COLOR_BUFFER_BIT);
 
-    mat4.ortho(Matrices.projection, 0, width, 0, height, -1, 1);
-    mat4.identity(Matrices.modelView);
+    state.oldTime = glSaver.timeSinceStart() + state.randSeed;
+};
     gl.uniformMatrix4fv(Uniforms.pMatrix, false, Matrices.projection);
     gl.uniformMatrix4fv(Uniforms.modelView, false, Matrices.modelView);
 
@@ -206,12 +197,12 @@ Flurry.GLSaver.setup = function()
 Flurry.GLSaver.render = function()
 {
     'use strict';
+    window.requestAnimationFrame(Flurry.GLSaver.render, null);
     Flurry.GLSaver.resize();
 
-    var state  = Flurry.GLSaver.State,
-        config = Flurry.GLSaver.Config,
-        glx    = WebGLRenderingContext,
-        gl     = Flurry.webgl;
+    var state = Flurry.GLSaver.State,
+        glx   = WebGLRenderingContext,
+        gl    = Flurry.webgl;
 
     state.frame++;
     state.oldTime   = state.time;
@@ -242,7 +233,8 @@ Flurry.GLSaver.render = function()
 Flurry.GLSaver.resize = function()
 {
     'use strict';
-    var gl     = Flurry.webgl,
+    var glx    = WebGLRenderingContext,
+        gl     = Flurry.webgl,
         width  = gl.canvas.clientWidth,
         height = gl.canvas.clientHeight;
 
@@ -251,5 +243,13 @@ Flurry.GLSaver.resize = function()
         gl.canvas.width  = width;
         gl.canvas.height = height;
         gl.viewport(0, 0, width, height);
+        gl.clear(glx.COLOR_BUFFER_BIT | glx.DEPTH_BUFFER_BIT);
+
+        //mat4.ortho(Matrices.projection, 0, width, 0, height, -1, 1);
+        mat4.perspective(Matrices.projection, 45, width / height, 0.1, 100.0);
+        mat4.identity(Matrices.modelView);
+        mat4.translate(Matrices.modelView, [0, 0, -7]);
+        gl.uniformMatrix4fv(Uniforms.pMatrix, false, Matrices.projection);
+        gl.uniformMatrix4fv(Uniforms.modelView, false, Matrices.modelView);
     }
 };
