@@ -23,11 +23,19 @@ Flurry.Smoke = function()
     this.frame     = 0;
 
     /** @type {Float32Array[]} */
-    this.seraphimVertices = ArrayOf.Vector4F(MAX_SMOKE * 2 + 1);
+    this.seraphimVertices     = ArrayOf.Vector4F(MAX_SMOKE * 2 + 1);
+    this.seraphimVerticesFlat = new Float32Array((MAX_SMOKE * 2 + 1) * 4);
     /** @type {Float32Array[]} */
     this.seraphimColors   = ArrayOf.Vector4F(MAX_SMOKE * 4 + 1);
     /** @type {Float32Array} */
     this.seraphimTextures = new Float32Array(MAX_SMOKE * 2 * 4);
+
+    /** @type {BufferGeometry} */
+    this.geometry = null;
+    /** @type {MeshBasicMaterial} */
+    this.material = null;
+    /** @type {Mesh} */
+    this.mesh     = null;
 
     this.init = function()
     {
@@ -42,6 +50,17 @@ Flurry.Smoke = function()
 
         for (var i = 0; i < 3; i++)
             this.oldPos[i] = Math.randFlt(-100, 100);
+
+        this.geometry = new THREE.BufferGeometry();
+        this.geometry.dynamic = true;
+        this.geometry.addAttribute( 'position', new THREE.BufferAttribute( this.seraphimVerticesFlat, 4 ) );
+
+        this.material = new THREE.MeshBasicMaterial({
+            shading : THREE.FlatShading
+        });
+
+        this.mesh = new THREE.Mesh(this.geometry, this.material);
+        Flurry.scene.add(this.mesh);
     };
 
     this.update = function()
@@ -180,10 +199,8 @@ Flurry.Smoke = function()
 
             state   = Flurry.GLSaver.State,
             config  = Flurry.GLSaver.Config,
-            screenW = Flurry.canvas.clientWidth,
-            screenH = Flurry.canvas.clientHeight,
-            gl      = Flurry.webgl,
-            glx     = WebGLRenderingContext,
+            screenW = Flurry.renderer.domElement.clientWidth,
+            screenH = Flurry.renderer.domElement.clientHeight,
 
             screenRatio = screenW / 1024,
             wslash2     = screenW * 0.5,
@@ -287,34 +304,16 @@ Flurry.Smoke = function()
 
         // Flatten seraphimVertices
         // TODO: Optimize!! This is a rushed implementation...
-        var seraphimVerticesFlat = new Float32Array((MAX_SMOKE * 2 + 1) * 4);
         for (i = 0; i < (MAX_SMOKE * 2 + 1); i++)
         {
             var offset = i * 4;
-            seraphimVerticesFlat[offset+0] = this.seraphimVertices[i][0];
-            seraphimVerticesFlat[offset+1] = this.seraphimVertices[i][1];
-            seraphimVerticesFlat[offset+2] = this.seraphimVertices[i][2];
-            seraphimVerticesFlat[offset+3] = this.seraphimVertices[i][3];
+            this.seraphimVerticesFlat[offset+0] = this.seraphimVertices[i][0];
+            this.seraphimVerticesFlat[offset+1] = this.seraphimVertices[i][1];
+            this.seraphimVerticesFlat[offset+2] = this.seraphimVertices[i][2];
+            this.seraphimVerticesFlat[offset+3] = this.seraphimVertices[i][3];
         }
 
-        gl.bindBuffer(glx.ARRAY_BUFFER, Buffers.vertPos);
-        gl.bufferData(glx.ARRAY_BUFFER, seraphimVerticesFlat, glx.STATIC_DRAW);
-        gl.vertexAttribPointer(Attributes.vertPos, 2, glx.FLOAT, false, 0, 0);
-
-        var seraphimColorsFlat = new Float32Array((MAX_SMOKE * 4 + 1) * 4);
-        for (i = 0; i < (MAX_SMOKE * 4 + 1); i++)
-        {
-            offset = i * 4;
-            seraphimColorsFlat[offset+0] = this.seraphimColors[i][0];
-            seraphimColorsFlat[offset+1] = this.seraphimColors[i][1];
-            seraphimColorsFlat[offset+2] = this.seraphimColors[i][2];
-            seraphimColorsFlat[offset+3] = this.seraphimColors[i][3];
-        }
-
-        gl.bindBuffer(glx.ARRAY_BUFFER, Buffers.vertCol);
-        gl.bufferData(glx.ARRAY_BUFFER, seraphimColorsFlat, glx.STATIC_DRAW);
-        gl.vertexAttribPointer(Attributes.vertCol, 4, glx.FLOAT, false, 0, 0);
-
-        gl.drawArrays(WebGLRenderingContext.TRIANGLE_STRIP, 0, si * 4);
+        this.geometry.verticesNeedUpdate = true;
+        //this.geometry.computeBoundingSphere();
     };
 };

@@ -17,7 +17,7 @@
             overflow:   hidden;
         }
 
-        canvas#render
+        canvas
         {
             background: #000;
             width:      100%;
@@ -27,7 +27,7 @@
 </head>
 
 <body>
-    <canvas id="render"></canvas>
+
 </body>
 
 <shaders>
@@ -68,14 +68,8 @@
 </shaders>
 
 <scripts>
-    <script type="application/javascript">
-        var MAX_PARTICLES = 2500;
-        var MAX_SMOKE     = 3600;
-        var MAX_ANGLES    = 16384;
-        var BIG_MYSTERY   = 1800;
-    </script>
-
-    <script src="js/lib/gl-matrix.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.1.0/gl-matrix-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/three.js/r68/three.js"></script>
 
     <script src="js/util/ArrayOf.js"></script>
     <script src="js/util/ColorModes.js"></script>
@@ -91,7 +85,7 @@
     <script src="js/GLSaver.js"></script>
 
     <script type="application/javascript">
-        Flurry.main('render');
+        Flurry.main();
     </script>
 </scripts>
 </html>

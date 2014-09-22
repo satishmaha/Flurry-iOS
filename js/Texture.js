@@ -1,16 +1,11 @@
 // By Roy Curtis
 // Based off original code from https://github.com/calumr/flurry
 
-/**
- * Namespace for the texture creation logic
- * @type {object}
- * @namespace
- */
 Flurry.Texture = {};
 
 /**
- * The WebGL texture used by Flurry
- * @type {WebGLTexture}
+ * The THREE.JS texture used by Flurry
+ * @type {DataTexture}
  */
 Flurry.Texture.ref = null;
 
@@ -151,9 +146,6 @@ Flurry.Texture.create = function()
 {
     'use strict';
 
-    var gl  = Flurry.webgl,
-        glx = WebGLRenderingContext;
-
     for (var i = 0; i < 8; i++)
     for (var j = 0; j < 8; j++)
     {
@@ -165,15 +157,6 @@ Flurry.Texture.create = function()
         Flurry.Texture.copySmallToBig(i * 32, j * 32);
     }
 
-    gl.pixelStorei(glx.UNPACK_ALIGNMENT, 1);
-    Flurry.Texture.ref = gl.createTexture();
-    gl.bindTexture(glx.TEXTURE_2D, Flurry.Texture.ref);
-
-    gl.texParameteri(glx.TEXTURE_2D, glx.TEXTURE_WRAP_S, glx.REPEAT);
-    gl.texParameteri(glx.TEXTURE_2D, glx.TEXTURE_WRAP_T, glx.REPEAT);
-    gl.texParameteri(glx.TEXTURE_2D, glx.TEXTURE_MAG_FILTER, glx.LINEAR);
-    gl.texParameteri(glx.TEXTURE_2D, glx.TEXTURE_MIN_FILTER, glx.LINEAR_MIPMAP_NEAREST);
-
     // Flatten bigTex
     var bigTexFlat = new Uint8Array(256 * 256 * 2);
     for (i = 0; i < 256; i++)
@@ -184,8 +167,12 @@ Flurry.Texture.create = function()
         bigTexFlat[offset+1] = Flurry.Texture.bigTex[i][j][1];
     }
 
-    gl.texImage2D(glx.TEXTURE_2D, 0, glx.LUMINANCE_ALPHA, 256, 256, 0, glx.LUMINANCE_ALPHA, glx.UNSIGNED_BYTE, bigTexFlat);
-    gl.generateMipmap(glx.TEXTURE_2D);
+    Flurry.Texture.ref = new THREE.DataTexture(
+        bigTexFlat, 256, 256,
+        THREE.LuminanceAlphaFormat, THREE.UnsignedByteType,
+        THREE.Texture.DEFAULT_MAPPING, THREE.RepeatWrapping, THREE.RepeatWrapping,
+        THREE.LinearFilter, THREE.LinearMipMapNearestFilter, 1
+    );
 
     // TODO: WebGL (TexEnvF shader?)
     // See http://graphics.snu.ac.kr/class/graphics2011/materials/ch14_glsl.pdf
