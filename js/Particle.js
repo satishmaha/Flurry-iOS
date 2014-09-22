@@ -52,7 +52,7 @@ Flurry.Particle = function()
         for (var i = 0; i < 3; i++)
         {
             this.oldPos[i]  = this.pos[i];
-            this.pos[i]    += this.deltaPos[i] * Flurry.State.deltaTime;
+            this.pos[i]    += this.deltaPos[i] * Flurry.GLSaver.State.deltaTime;
         }
     };
 

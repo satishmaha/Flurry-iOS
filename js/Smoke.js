@@ -284,5 +284,7 @@ Flurry.Smoke = function()
         }
 
         // TODO: Figure out GL code
+
+        Flurry.webgl.drawArrays(WebGLRenderingContext.TRIANGLE_STRIP, 0, si * 4);
     };
 };

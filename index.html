@@ -30,15 +30,54 @@
     <canvas id="render"></canvas>
 </body>
 
+<shaders>
+    <script id="shader-vs" type="x-shader/x-vertex">
+        attribute vec3 aVertexPosition;
+        attribute vec3 aVertexColor;
+        attribute vec2 aTextureCoord;
+
+        uniform mat4 uMVMatrix;
+        uniform mat4 uPMatrix;
+
+        varying highp vec2 vTextureCoord;
+        varying vec4 vColor;
+
+        void main(void)
+        {
+            gl_Position = uModelViewProjectionMatrix * aVertexPosition;
+            vTextureCoord = aTextureCoord;
+        }
+    </script>
+
+    <script id="shader-fs" type="x-shader/x-fragment">
+        varying highp vec2 vTextureCoord;
+
+        uniform sampler2D uSampler;
+
+        void main(void)
+        {
+            // Alpha test
+            if (vColor.a <= 0.0f)
+            {
+                discard;
+            }
+            color = v_frontColor;
+            gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+        }
+    </script>
+</shaders>
+
 <scripts>
     <script type="application/javascript">
-        const MAX_PARTICLES = 2500;
-        const MAX_SMOKE     = 3600;
-        const MAX_ANGLES    = 16384;
-        const BIG_MYSTERY   = 1800;
+        var MAX_PARTICLES = 2500;
+        var MAX_SMOKE     = 3600;
+        var MAX_ANGLES    = 16384;
+        var BIG_MYSTERY   = 1800;
 
-        const BLACK = [0, 0, 0, 1];
+        var BLACK = [0, 0, 0, 1];
     </script>
+
+    <script src="js/lib/gl-matrix.js"></script>
 
     <script src="js/util/ArrayOf.js"></script>
     <script src="js/util/ColorModes.js"></script>

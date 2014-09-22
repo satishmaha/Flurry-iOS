@@ -4,17 +4,16 @@
 /**
  * Creates an array wherein each element is an instance created from the given
  * prototype
- * @param {T} proto Prototype to make an array of elements with
+ * @param {Function} proto Prototype to make an array of elements with
  * @param {Number} count Number of elements
- * @return {Array.<T>} Array of elements, each of the given type
- * @template T
+ * @return {Array} Array of elements, each of the given type
  */
 var ArrayOf = function(proto, count)
 {
     var array = new Array(count);
 
     for (var i = 0; i < count; i++)
-        array[i] = Object.create(proto);
+        array[i] = new proto();
 
     return array;
 };

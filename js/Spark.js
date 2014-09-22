@@ -28,9 +28,9 @@ Flurry.Spark = function()
         'use strict';
 
         var state  = Flurry.GLSaver.State,
-            config = Flurry.GLSaver.Config;
+            config = Flurry.GLSaver.Config,
 
-        const rotsPerSecond = 2 * Math.PI * config.fieldSpeed / MAX_ANGLES;
+            rotsPerSecond = 2 * Math.PI * config.fieldSpeed / MAX_ANGLES;
 
         // Optimized from original code, which contained a duplicate of updateColor here
         this.updateColor();
@@ -90,9 +90,8 @@ Flurry.Spark = function()
         'use strict';
 
         var state  = Flurry.GLSaver.State,
-            config = Flurry.GLSaver.Config;
-
-        const rotsPerSecond = 2 * Math.PI * config.fieldSpeed / MAX_ANGLES;
+            config = Flurry.GLSaver.Config,
+            rotsPerSecond = 2 * Math.PI * config.fieldSpeed / MAX_ANGLES;
 
         var thisAngle = state.time * rotsPerSecond,
             cycleTime = 20;

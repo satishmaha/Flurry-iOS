@@ -173,7 +173,20 @@ Flurry.Texture.create = function()
     gl.texParameteri(glx.TEXTURE_2D, glx.TEXTURE_WRAP_T, glx.REPEAT);
     gl.texParameteri(glx.TEXTURE_2D, glx.TEXTURE_MAG_FILTER, glx.LINEAR);
     gl.texParameteri(glx.TEXTURE_2D, glx.TEXTURE_MIN_FILTER, glx.LINEAR_MIPMAP_NEAREST);
+
+    // Flatten bigTex
+    var bigTexFlat = new Uint8Array(256 * 256 * 2);
+    for (i = 0; i < 256; i++)
+    for (j = 0; j < 256; j++)
+    {
+        var offset = (i*256*2 + j*2);
+        bigTexFlat[offset]   = Flurry.Texture.bigTex[i][j][0];
+        bigTexFlat[offset+1] = Flurry.Texture.bigTex[i][j][1];
+    }
+
+    gl.texImage2D(glx.TEXTURE_2D, 0, glx.LUMINANCE_ALPHA, 256, 256, 0, glx.LUMINANCE_ALPHA, glx.UNSIGNED_BYTE, bigTexFlat);
     gl.generateMipmap(glx.TEXTURE_2D);
+
     // TODO: WebGL (TexEnvF shader?)
     // See https://code.google.com/p/gles2-bc/source/browse/trunk/Sources/OpenGLES/OpenGLES20/shaders/texture0.frag#114
 };
