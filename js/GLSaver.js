@@ -22,7 +22,6 @@ Flurry.GLSaver.Config = {
     fieldCoherence   : 0,
     fieldSpeed       : 12.0,
     fieldRange       : 1000.0,
-    numParticles     : 250,
     seraphDistance   : 2000.0,
     starSpeed        : 50,
     streamBias       : 7.0,
@@ -32,8 +31,6 @@ Flurry.GLSaver.Config = {
 
 /** @namespace */
 Flurry.GLSaver.State = {};
-/** @type {Flurry.Particle[]} */
-Flurry.GLSaver.State.particles = ArrayOf(Flurry.Particle, MAX_PARTICLES);
 /** @type {Flurry.Spark[]} */
 Flurry.GLSaver.State.spark     = ArrayOf(Flurry.Spark, 64);
 /** @type {Flurry.Smoke} */
@@ -246,12 +243,9 @@ Flurry.GLSaver.render = function()
 
     state.drag = Math.pow(0.9965, state.deltaTime * 85);
 
-    for (var i = 0; i < config.numParticles; i++)
-        state.particles[i].update();
-
     state.star.update();
 
-    for (i = 0; i < state.numStreams; i++)
+    for (var i = 0; i < state.numStreams; i++)
         state.spark[i].update();
 
     state.smoke.update();

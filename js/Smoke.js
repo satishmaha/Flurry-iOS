@@ -79,9 +79,9 @@ Flurry.Smoke = function()
                 this.particles[this.nextParticle].oldPos[2][this.nextSubParticle]   = starPos[2];
 
                 var streamSpeedCoherenceFactor = Math.max( 0, 1 + Math.randBell(0.25*config.incohesion) ),
-                    dX  = this.particles[this.nextParticle].position[0][this.nextSubParticle] - state.spark[i].pos[0],
-                    dY  = this.particles[this.nextParticle].position[1][this.nextSubParticle] - state.spark[i].pos[1],
-                    dZ  = this.particles[this.nextParticle].position[2][this.nextSubParticle] - state.spark[i].pos[2],
+                    dX  = this.particles[this.nextParticle].pos[0][this.nextSubParticle] - state.spark[i].pos[0],
+                    dY  = this.particles[this.nextParticle].pos[1][this.nextSubParticle] - state.spark[i].pos[1],
+                    dZ  = this.particles[this.nextParticle].pos[2][this.nextSubParticle] - state.spark[i].pos[2],
                     rsq = (dX*dX+dY*dY+dZ*dZ),
                     f   = config.streamSpeed * streamSpeedCoherenceFactor,
                     mag = f / Math.sqrt(rsq);
