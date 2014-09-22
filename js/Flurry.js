@@ -33,6 +33,7 @@ Flurry.main = function(canvasId)
     Flurry.Texture.create();
     Flurry.GLSaver.setupOT();
     Flurry.GLSaver.setupShaders();
+    Flurry.GLSaver.setupBuffers();
     Flurry.GLSaver.setup();
 
     // Begin!
@@ -85,6 +86,10 @@ Flurry.initShaders = function()
         Flurry.webgl.attachShader(Flurry.shader, vertexShader);
         Flurry.webgl.attachShader(Flurry.shader, fragmentShader);
         Flurry.webgl.linkProgram(Flurry.shader);
+
+        if ( !Flurry.webgl.getProgramParameter(Flurry.shader, WebGLRenderingContext.LINK_STATUS) )
+            throw new Error( Flurry.webgl.getProgramInfoLog(Flurry.shader));
+
         return true;
     }
     catch (e)

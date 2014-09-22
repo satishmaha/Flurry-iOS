@@ -167,6 +167,8 @@ Flurry.Smoke = function()
             config  = Flurry.GLSaver.Config,
             screenW = Flurry.canvas.clientWidth,
             screenH = Flurry.canvas.clientHeight,
+            gl      = Flurry.webgl,
+            glx     = WebGLRenderingContext,
 
             screenRatio = screenW / 1024,
             wslash2     = screenW * 0.5,
@@ -269,7 +271,13 @@ Flurry.Smoke = function()
         }
 
         // TODO: Figure out GL code
+//        glColorPointer(4,GL_FLOAT,0,s->seraphimColors);
+//        glVertexPointer(2,GL_FLOAT,0,s->seraphimVertices);
+//        glTexCoordPointer(2,GL_FLOAT,0,s->seraphimTextures);
 
-        Flurry.webgl.drawArrays(WebGLRenderingContext.TRIANGLE_STRIP, 0, si * 4);
+        gl.bindBuffer(glx.ARRAY_BUFFER, Buffers.vertPos);
+        gl.bufferData(glx.ARRAY_BUFFER, this.seraphimVertices, glx.STATIC_DRAW);
+        gl.vertexAttribPointer(Attributes.vertPos, 2, glx.FLOAT, false, 0, 0);
+        gl.drawArrays(WebGLRenderingContext.TRIANGLE_STRIP, 0, si * 4);
     };
 };

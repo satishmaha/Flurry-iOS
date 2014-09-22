@@ -188,5 +188,5 @@ Flurry.Texture.create = function()
     gl.generateMipmap(glx.TEXTURE_2D);
 
     // TODO: WebGL (TexEnvF shader?)
-    // See https://code.google.com/p/gles2-bc/source/browse/trunk/Sources/OpenGLES/OpenGLES20/shaders/texture0.frag#114
+    // See http://graphics.snu.ac.kr/class/graphics2011/materials/ch14_glsl.pdf
 };

@@ -68,58 +68,6 @@ Flurry.GLSaver.State.streamExpansion = 100;
 /** @type {number} */
 Flurry.GLSaver.State.numStreams      = 5;
 
-Flurry.GLSaver.prMatrix = new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);
-Flurry.GLSaver.prStack  = [];
-Flurry.GLSaver.mvMatrix = new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);
-Flurry.GLSaver.mvStack  = [];
-
-Flurry.GLSaver.activeMatrix = Flurry.GLSaver.prMatrix;
-Flurry.GLSaver.activeStack  = Flurry.GLSaver.prStack;
-
-/**
- * @static
- * @function
- */
-Flurry.GLSaver.matrixMode = function(mode)
-{
-    'use strict';
-    if (mode == 1)
-    {
-        Flurry.GLSaver.activeMatrix = Flurry.GLSaver.prMatrix;
-        Flurry.GLSaver.activeStack  = Flurry.GLSaver.prStack;
-    }
-    else if (mode == 2)
-    {
-        Flurry.GLSaver.activeMatrix = Flurry.GLSaver.mvMatrix;
-        Flurry.GLSaver.activeStack  = Flurry.GLSaver.mvStack;
-    }
-};
-
-/**
- * @static
- * @function
- */
-Flurry.GLSaver.loadIdentity = function()
-{
-    'use strict';
-    Flurry.GLSaver.activeMatrix[0]  = 1;
-    Flurry.GLSaver.activeMatrix[1]  = 0;
-    Flurry.GLSaver.activeMatrix[2]  = 0;
-    Flurry.GLSaver.activeMatrix[3]  = 0;
-    Flurry.GLSaver.activeMatrix[4]  = 0;
-    Flurry.GLSaver.activeMatrix[5]  = 1;
-    Flurry.GLSaver.activeMatrix[6]  = 0;
-    Flurry.GLSaver.activeMatrix[7]  = 0;
-    Flurry.GLSaver.activeMatrix[8]  = 0;
-    Flurry.GLSaver.activeMatrix[9]  = 0;
-    Flurry.GLSaver.activeMatrix[10] = 1;
-    Flurry.GLSaver.activeMatrix[11] = 0;
-    Flurry.GLSaver.activeMatrix[12] = 0;
-    Flurry.GLSaver.activeMatrix[13] = 0;
-    Flurry.GLSaver.activeMatrix[14] = 0;
-    Flurry.GLSaver.activeMatrix[15] = 1;
-};
-
 /**
  * @static
  * @function
@@ -143,16 +91,53 @@ Flurry.GLSaver.timeSinceStart = function()
     return (Date.now() - Flurry.GLSaver.timeCounter) / 1000;
 };
 
-var ShaderAttr = {};
-ShaderAttr.vertPos  = null;
-ShaderAttr.vertCol  = null;
-ShaderAttr.texCoord = null;
+var Attributes = {};
+Attributes.vertPos  = null;
+Attributes.vertCol  = null;
+Attributes.texCoord = null;
+
+var Uniforms = {};
+Uniforms.pMatrix = null;
+Uniforms.mvMatrix = null;
+
+var Matrices = {};
+Matrices.projection = mat4.create();
+Matrices.modelView  = mat4.create();
 
 /**
  * @static
  * @function
  */
 Flurry.GLSaver.setupShaders = function()
+{
+    'use strict';
+    var gl = Flurry.webgl;
+
+    gl.useProgram(Flurry.shader);
+
+    Attributes.vertPos = gl.getAttribLocation(Flurry.shader, "aVertexPosition");
+    gl.enableVertexAttribArray(Attributes.vertPos);
+
+    Attributes.vertCol = gl.getAttribLocation(Flurry.shader, "aVertexColor");
+    gl.enableVertexAttribArray(Attributes.vertCol);
+
+    Attributes.texCoord = gl.getAttribLocation(Flurry.shader, "aTextureCoord");
+    gl.enableVertexAttribArray(Attributes.texCoord);
+
+    Uniforms.pMatrix  = gl.getUniformLocation(Flurry.shader, "uPMatrix");
+    Uniforms.mvMatrix = gl.getUniformLocation(Flurry.shader, "uMVMatrix");
+};
+
+var Buffers = {};
+Buffers.vertPos  = null;
+Buffers.vertCol  = null;
+Buffers.texCoord = null;
+
+/**
+ * @static
+ * @function
+ */
+Flurry.GLSaver.setupBuffers = function()
 {
     'use strict';
     var glSaver = Flurry.GLSaver,
@@ -162,16 +147,9 @@ Flurry.GLSaver.setupShaders = function()
         width   = gl.canvas.clientWidth,
         height  = gl.canvas.clientHeight;
 
-    gl.useProgram(Flurry.shader);
-
-    ShaderAttr.vertPos = gl.getAttribLocation(Flurry.shader, "aVertexPosition");
-    gl.enableVertexAttribArray(ShaderAttr.vertPos);
-
-    ShaderAttr.vertCol = gl.getAttribLocation(Flurry.shader, "aVertexColor");
-    gl.enableVertexAttribArray(ShaderAttr.vertCol);
-
-    ShaderAttr.texCoord = gl.getAttribLocation(Flurry.shader, "aTextureCoord");
-    gl.enableVertexAttribArray(ShaderAttr.texCoord);
+    Buffers.vertPos  = gl.createBuffer();
+    Buffers.vertCol  = gl.createBuffer();
+    Buffers.texCoord = gl.createBuffer();
 };
 
 /**
@@ -210,15 +188,14 @@ Flurry.GLSaver.setup = function()
     gl.disable(glx.DEPTH_TEST);
     gl.disable(glx.CULL_FACE);
     gl.enable(glx.BLEND);
-
-    glSaver.matrixMode(1);
-    glSaver.loadIdentity();
-    mat4.ortho(glSaver.activeMatrix, 0, width, 0, height, -1, 1);
-    glSaver.matrixMode(0);
-    glSaver.loadIdentity();
-
     gl.clearColor(0, 0, 0, 1);
     gl.clear(glx.COLOR_BUFFER_BIT);
+
+    mat4.ortho(Matrices.projection, 0, width, 0, height, -1, 1);
+    mat4.identity(Matrices.modelView);
+    gl.uniformMatrix4fv(Uniforms.pMatrix, false, Matrices.projection);
+    gl.uniformMatrix4fv(Uniforms.modelView, false, Matrices.modelView);
+
     state.oldTime = glSaver.timeSinceStart() + state.randSeed;
 };
 
