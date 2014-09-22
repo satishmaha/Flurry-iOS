@@ -15,6 +15,17 @@ Flurry.Star = function()
     /** @type {boolean} */
     this.ate      = false;
 
+    this.init = function()
+    {
+        'use strict';
+
+        for (var i = 0; i < 3; i++)
+            this.pos[i] = Math.randFlt(-10000, 10000);
+
+        this.rotSpeed = Math.randFlt(0.4, 0.9);
+        this.mystery  = Math.randFlt(0.0, 10.0);
+    };
+
     this.update = function()
     {
         'use strict';

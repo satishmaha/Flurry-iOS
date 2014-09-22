@@ -29,6 +29,21 @@ Flurry.Smoke = function()
     /** @type {Float32Array} */
     this.seraphimTextures = new Float32Array(MAX_SMOKE * 2 * 4);
 
+    this.init = function()
+    {
+        'use strict';
+
+        this.nextParticle    = 0;
+        this.nextSubParticle = 0;
+
+        this.lastParticleTime  = 0.25;
+        this.firstTime = true;
+        this.frame     = 0;
+
+        for (var i = 0; i < 3; i++)
+            this.oldPos[i] = Math.randFlt(-100, 100);
+    };
+
     this.update = function()
     {
         'use strict';

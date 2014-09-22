@@ -15,6 +15,14 @@ Flurry.Spark = function()
     /** @type {number} */
     this.mystery  = 0;
 
+    this.init = function()
+    {
+        'use strict';
+
+        for (var i = 0; i < 3; i++)
+            this.pos[i] = Math.randFlt(-100, 100);
+    };
+
     this.update = function()
     {
         'use strict';
