@@ -22,39 +22,22 @@ Flurry.Smoke = function()
     /** @type {number} */
     this.frame     = 0;
 
-    /** @type {THREE.Mesh[]} */
-    this.quads = new Array(MAX_SMOKE / 4);
-
     this.init = function()
     {
         'use strict';
 
-        this.nextParticle    = 0;
-        this.nextSubParticle = 0;
+        this.nextParticle     = 0;
+        this.nextSubParticle  = 0;
+        this.lastParticleTime = 0.25;
 
-        this.lastParticleTime  = 0.25;
         this.firstTime = true;
         this.frame     = 0;
 
         for (var i = 0; i < 3; i++)
             this.oldPos[i] = Math.randFlt(-100, 100);
 
-        for (i = 0; i < MAX_SMOKE; i++)
-        {
-            var mesh = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), this.material);
-            mesh.material = new THREE.MeshLambertMaterial({
-                map: Flurry.Texture.ref, vertexColors: THREE.FaceColors,
-                shading: THREE.FlatShading, transparent: true, blending: THREE.AdditiveBlending
-            });
-            mesh.material.depthTest   = false;
-            mesh.material.depthWrite  = false;
-            mesh.material.needsUpdate = true;
-            mesh.material.opacity     = 0.0;
-            mesh.material.alphaTest   = 0.0;
-
-            this.quads[i] = mesh;
-            Flurry.scene.add(mesh);
-        }
+        for (i = 0; i < MAX_SMOKE / 4; i++)
+            this.particles[i].init();
     };
 
     this.update = function()
@@ -79,7 +62,7 @@ Flurry.Smoke = function()
                 dz = this.oldPos[2] - starPos[2],
                 deltaPos = new Float32Array([dx * 5, dy * 5, dz * 5]);
 
-            for (var i = 0; i < state.numStreams; i++)
+            for (var i = 0; i < config.numStreams; i++)
             {
                 this.particles[this.nextParticle].deltaPos[0][this.nextSubParticle] = deltaPos[0];
                 this.particles[this.nextParticle].deltaPos[1][this.nextSubParticle] = deltaPos[1];
@@ -142,7 +125,7 @@ Flurry.Smoke = function()
                 deltaY = this.particles[i].deltaPos[1][k],
                 deltaZ = this.particles[i].deltaPos[2][k];
 
-            for (var j = 0; j < state.numStreams; j++)
+            for (var j = 0; j < config.numStreams; j++)
             {
                 dX  = this.particles[i].pos[0][k] - state.spark[j].pos[0];
                 dY  = this.particles[i].pos[1][k] - state.spark[j].pos[1];
@@ -150,7 +133,7 @@ Flurry.Smoke = function()
                 rsq = (dX*dX+dY*dY+dZ*dZ);
                 f   = (config.gravity / rsq) * frameRateModifier;
 
-                if ( (((i*4)+k) % state.numStreams) == j )
+                if ( (((i*4)+k) % config.numStreams) == j )
                     f *= 1 + config.streamBias;
 
                 mag = f / Math.sqrt(rsq);
@@ -186,11 +169,8 @@ Flurry.Smoke = function()
     {
         'use strict';
 
-        var svi = 0,
-            sci = 0,
-            sti = 0,
-            si  = 0,
-
+        var particle, quad,
+            si      = 0,
             state   = Flurry.GLSaver.State,
             config  = Flurry.GLSaver.Config,
             screenW = Flurry.renderer.domElement.clientWidth,
@@ -199,105 +179,104 @@ Flurry.Smoke = function()
             screenRatio = screenW / 1024,
             wslash2     = screenW * 0.5,
             hslash2     = screenH * 0.5,
-            width       = (config.streamSize + 2.5 * state.streamExpansion) * screenRatio;
+            width       = (config.streamSize + 2.5 * config.streamExpansion) * screenRatio;
 
         for (var i = 0; i < MAX_SMOKE / 4; i++) // Per... group of four quads?
-        for (var k = 0; k < 4; k++)             // Per quad
         {
-            if (this.particles[i].dead[k] == 1)
-                continue;
+            particle = this.particles[i];
 
-            var thisWidth = (config.streamSize + (state.time - this.particles[i].time[k]) * state.streamExpansion) * screenRatio;
-
-            if (thisWidth >= width)
+            for (var k = 0; k < 4; k++)             // Per quad
             {
-                this.particles[i].dead[k] = 1;
-                continue;
+                quad = particle.quads[k];
+                quad.visible = false;
+
+                if (this.particles[i].dead[k] == 1)
+                    continue;
+
+                var thisWidth = (config.streamSize + (state.time - this.particles[i].time[k]) * config.streamExpansion) * screenRatio;
+
+                if (thisWidth >= width)
+                {
+                    this.particles[i].dead[k] = 1;
+                    continue;
+                }
+
+                // Each particle is keeping positions of four quads ?
+                var z = this.particles[i].pos[2][k],
+                    sx = this.particles[i].pos[0][k] * screenW / z + wslash2,
+                    sy = this.particles[i].pos[1][k] * screenW / z + hslash2,
+                    oldz = this.particles[i].oldPos[2][k];
+
+                if (sx > screenW + 50 || sx < -50 || sy > screenH + 50 || sy < -50 || z < 25 || oldz < 25.)
+                    continue;
+
+                var w = Math.max(1, thisWidth / z),
+                    oldx = this.particles[i].oldPos[0][k],
+                    oldy = this.particles[i].oldPos[1][k],
+
+                    oldscreenx = (oldx * screenW / oldz) + wslash2,
+                    oldscreeny = (oldy * screenW / oldz) + hslash2,
+                    dx = (sx - oldscreenx),
+                    dy = (sy - oldscreeny),
+                    d = Math.fastDist2D(dx, dy),
+                    sm = d ? w / d : 0.0,
+                    ow = Math.max(1, thisWidth / oldz),
+                    os = d ? ow / d : 0.0;
+
+                var cmv = Vector4F(),
+                    m = 1 + sm,
+                    dxs = dx * sm,
+                    dys = dy * sm,
+                    dxos = dx * os,
+                    dyos = dy * os,
+                    dxm = dx * m,
+                    dym = dy * m;
+
+                this.particles[i].frame[k]++;
+
+                if (this.particles[i].frame[k] >= 64)
+                    this.particles[i].frame[k] = 0;
+
+                var u0 = (this.particles[i].frame[k] && 7) * 0.125,
+                    v0 = (this.particles[i].frame[k] >> 3) * 0.125,
+                    u1 = u0 + 0.125,
+                    v1 = v0 + 0.125,
+                    cm = (1.375 - thisWidth / width);
+
+                quad.visible = true;
+                cmv[0] = this.particles[i].color[0][k] * cm;
+                cmv[1] = this.particles[i].color[1][k] * cm;
+                cmv[2] = this.particles[i].color[2][k] * cm;
+                cmv[3] = this.particles[i].color[3][k] * cm;
+
+                quad.geometry.faces[0].color.setRGB(cmv[0], cmv[1], cmv[2]);
+                quad.geometry.faces[1].color.setRGB(cmv[0], cmv[1], cmv[2]);
+                quad.material.opacity = cmv[3];
+                quad.geometry.colorsNeedUpdate = true;
+
+                // First index: layer (always 0)
+                // Second index: face (0 or 1)
+                // Third index: vertex (0, 1 or 2)
+                quad.geometry.faceVertexUvs[0][0][0].set(u0, v0);
+                quad.geometry.faceVertexUvs[0][0][1].set(u0, v1);
+                quad.geometry.faceVertexUvs[0][0][2].set(u1, v0);
+                quad.geometry.faceVertexUvs[0][1][0].set(u0, v1);
+                quad.geometry.faceVertexUvs[0][1][1].set(u1, v1);
+                quad.geometry.faceVertexUvs[0][1][2].set(u1, v0);
+                quad.geometry.uvsNeedUpdate = true;
+
+                // Each seraphimVertices vector held the XY of two points in a quad
+                quad.geometry.vertices[0].x = sx + dxm - dys;
+                quad.geometry.vertices[0].y = sy + dym + dxs;
+                quad.geometry.vertices[1].x = sx + dxm + dys;
+                quad.geometry.vertices[1].y = sy + dym - dxs;
+                quad.geometry.vertices[2].x = oldscreenx - dxm - dyos;
+                quad.geometry.vertices[2].y = oldscreeny - dym + dxos;
+                quad.geometry.vertices[3].x = oldscreenx - dxm + dyos;
+                quad.geometry.vertices[3].y = oldscreeny - dym - dxos;
+                quad.geometry.verticesNeedUpdate = true;
+                si++;
             }
-
-            // Each particle is keeping positions of four quads ?
-            var z    = this.particles[i].pos[2][k],
-                sx   = this.particles[i].pos[0][k] * screenW / z + wslash2,
-                sy   = this.particles[i].pos[1][k] * screenW / z + hslash2,
-                oldz = this.particles[i].oldPos[2][k];
-
-            if (sx > screenW + 50 || sx < -50 || sy > screenH + 50 || sy < -50 || z < 25 || oldz < 25.)
-                continue;
-
-            var w    = Math.max(1, thisWidth / z),
-                oldx = this.particles[i].oldPos[0][k],
-                oldy = this.particles[i].oldPos[1][k],
-
-                oldscreenx = (oldx * screenW / oldz) + wslash2,
-                oldscreeny = (oldy * screenW / oldz) + hslash2,
-                dx = (sx - oldscreenx),
-                dy = (sy - oldscreeny),
-                d  = Math.fastDist2D(dx, dy),
-                sm = d ? w / d : 0.0,
-                ow = Math.max(1, thisWidth/oldz),
-                os = d ? ow / d : 0.0;
-
-            var cmv = Vector4F(),
-                m    = 1 + sm,
-                dxs  = dx * sm,
-                dys  = dy * sm,
-                dxos = dx * os,
-                dyos = dy * os,
-                dxm  = dx * m,
-                dym  = dy * m;
-
-            this.particles[i].frame[k]++;
-
-            if (this.particles[i].frame[k] >= 64)
-                this.particles[i].frame[k] = 0;
-
-            var u0 = (this.particles[i].frame[k] && 7) * 0.125,
-                v0 = (this.particles[i].frame[k] >> 3) * 0.125,
-                u1 = u0 + 0.125,
-                v1 = v0 + 0.125,
-                cm = (1.375 - thisWidth / width);
-
-            if (this.particles[i].dead[k] == 3)
-            {
-                cm *= 0.125;
-                this.particles[i].dead[k] = 1;
-            }
-
-            si++;
-            cmv[0] = this.particles[i].color[0][k] * cm;
-            cmv[1] = this.particles[i].color[1][k] * cm;
-            cmv[2] = this.particles[i].color[2][k] * cm;
-            cmv[3] = this.particles[i].color[3][k] * cm;
-
-            this.quads[sci].geometry.faces[0].color.setRGB(cmv[0], cmv[1], cmv[2]);
-            this.quads[sci].geometry.faces[1].color.setRGB(cmv[0], cmv[1], cmv[2]);
-            this.quads[sci].material.opacity = cmv[3];
-            this.quads[sci].geometry.colorsNeedUpdate = true;
-            sci++;
-
-            // First index: layer (always 0)
-            // Second index: face (0 or 1)
-            // Third index: vertex (0, 1 or 2)
-            this.quads[sti].geometry.faceVertexUvs[0][0][0].set(u0, v0);
-            this.quads[sti].geometry.faceVertexUvs[0][0][1].set(u0, v1);
-            this.quads[sti].geometry.faceVertexUvs[0][0][2].set(u1, v0);
-            this.quads[sti].geometry.faceVertexUvs[0][1][0].set(u0, v1);
-            this.quads[sti].geometry.faceVertexUvs[0][1][1].set(u1, v1);
-            this.quads[sti].geometry.faceVertexUvs[0][1][2].set(u1, v0);
-            this.quads[sti].geometry.uvsNeedUpdate = true;
-            sti++;
-
-            // Each seraphimVertices vector held the XY of two points in a quad
-            this.quads[svi].geometry.vertices[0].x = sx + dxm - dys;
-            this.quads[svi].geometry.vertices[0].y = sy + dym + dxs;
-            this.quads[svi].geometry.vertices[1].x = sx + dxm + dys;
-            this.quads[svi].geometry.vertices[1].y = sy + dym - dxs;
-            this.quads[svi].geometry.vertices[2].x = oldscreenx - dxm - dyos;
-            this.quads[svi].geometry.vertices[2].y = oldscreeny - dym + dxos;
-            this.quads[svi].geometry.vertices[3].x = oldscreenx - dxm + dyos;
-            this.quads[svi].geometry.vertices[3].y = oldscreeny - dym - dxos;
-            this.quads[svi].geometry.verticesNeedUpdate = true;
-            svi++;
         }
     };
 };

@@ -96,7 +96,7 @@ Flurry.Spark = function()
         var thisAngle = state.time * rotsPerSecond,
             cycleTime = 20;
 
-        switch (state.colorMode)
+        switch (config.colorMode)
         {
             case ColorModes.rainbow:
                 cycleTime = 1.5; break;
@@ -116,19 +116,19 @@ Flurry.Spark = function()
             colorTime       = state.time,
             baseRed, baseGreen, baseBlue;
 
-        if (state.colorMode == ColorModes.white)
+        if (config.colorMode == ColorModes.white)
         {
             baseRed   = 0.1875;
             baseGreen = 0.1875;
             baseBlue  = 0.1875;
         }
-        else if (state.colorMode == ColorModes.multi)
+        else if (config.colorMode == ColorModes.multi)
         {
             baseRed   = 0.0625;
             baseGreen = 0.0625;
             baseBlue  = 0.0625;
         }
-        else if (state.colorMode == ColorModes.dark)
+        else if (config.colorMode == ColorModes.dark)
         {
             baseRed  = 0.0;
             baseGreen = 0.0;
@@ -136,8 +136,8 @@ Flurry.Spark = function()
         }
         else
         {
-            if (state.colorMode < ColorModes.slowCyclic)
-                colorTime = (state.colorMode / 6) * cycleTime;
+            if (config.colorMode < ColorModes.slowCyclic)
+                colorTime = (config.colorMode / 6) * cycleTime;
             else
                 colorTime = state.time + state.randSeed;
 
