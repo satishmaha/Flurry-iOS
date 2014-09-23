@@ -63,3 +63,4 @@ sPartMesh.geometry.faces[1].vertexColors[2].b = state.smoke.seraphimColors[idx][
 
 // FACE A: 0, 2, 1 (or: top left, bottom left, top right)
 // FACE B: 2, 3, 1 (or: bottom left, bottom right, top right)
+

@@ -15,8 +15,10 @@ Flurry.GLSaver = {};
 Flurry.GLSaver.timeCounter = 0;
 
 Flurry.GLSaver.Config = {
+    brightness       : 1,
     colorIncoherence : 0.15,
     colorMode        : ColorModes.tiedye,
+    fade             : 0.1,
     gravity          : 1500000.0,
     incohesion       : 0.07,
     fieldCoherence   : 0,
@@ -127,8 +129,13 @@ Flurry.GLSaver.render = function()
 
     state.smoke.update();
     state.smoke.draw();
-    state.debug.update();
 
-    Flurry.renderer.render(Flurry.scene, Flurry.camera);
+    Flurry.buffer.update();
+    Flurry.renderer.render(Flurry.buffer.dimScene, Flurry.camera, Flurry.buffer.target, false);
+    Flurry.renderer.render(Flurry.scene, Flurry.camera, Flurry.buffer.target, false);
+    Flurry.renderer.render(Flurry.buffer.scene, Flurry.camera, null, false);
+
+    state.debug.update();
+    state.debug.render();
     Flurry.stats.end();
 };

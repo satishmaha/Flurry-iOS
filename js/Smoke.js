@@ -241,7 +241,7 @@ Flurry.Smoke = function()
                     v0 = (this.particles[i].frame[k] >> 3) * 0.125,
                     u1 = u0 + 0.125,
                     v1 = v0 + 0.125,
-                    cm = (1.375 - thisWidth / width);
+                    cm = (1.375 - thisWidth / width) * config.brightness;
 
                 quad.visible = true;
                 cmv[0] = this.particles[i].color[0][k] * cm;

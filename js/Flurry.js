@@ -11,12 +11,14 @@ var MAX_SMOKE     = 3600, // Originally 3600
  */
 var Flurry = {};
 
-/** @type {Scene} */
+/** @type {THREE.Scene} */
 Flurry.scene = null;
-/** @type {Camera} */
+/** @type {THREE.Camera} */
 Flurry.camera = null;
-/** @type {WebGLRenderer} */
+/** @type {THREE.WebGLRenderer} */
 Flurry.renderer = null;
+/** @type {Flurry.Buffer} */
+Flurry.buffer = null;
 /** @type {Stats} */
 Flurry.stats = null;
 /** @type {dat.GUI} */
@@ -32,10 +34,11 @@ Flurry.main = function()
     Flurry.scene    = new THREE.Scene();
     Flurry.camera   = new THREE.OrthographicCamera();
     Flurry.renderer = new THREE.WebGLRenderer({ antialias: false });
+    Flurry.buffer   = new Flurry.Buffer();
     Flurry.renderer.setFaceCulling(THREE.CullFaceNone);
     Flurry.renderer.setDepthTest(false);
     Flurry.renderer.setDepthWrite(false);
-    Flurry.renderer.setClearColor(0x000000, 1);
+    Flurry.renderer.autoClear = false;
     Flurry.onResize();
     window.addEventListener('resize', Flurry.onResize, false);
     document.body.appendChild(Flurry.renderer.domElement);
@@ -62,8 +65,10 @@ Flurry.setupGui = function()
     var gui    = Flurry.gui,
         config = Flurry.GLSaver.Config;
 
+    gui.add(config, 'brightness', 0, 5);
     gui.add(config, 'colorIncoherence', 0, 3);
     gui.add(config, 'colorMode', ColorModes);
+    var cfgFade = gui.add(config, 'fade', 0, 1);
     gui.add(config, 'gravity', 0, 6000000).step(1500);
     gui.add(config, 'incohesion', 0, 1);
     gui.add(config, 'seraphDistance', 0, 5000);
@@ -79,24 +84,28 @@ Flurry.setupGui = function()
     f2.add(config, 'streamExpansion', 1, 250);
     f2.add(config, 'streamSize', 0, 50000);
     f2.add(config, 'streamSpeed', 0, 1000);
+
+    cfgFade.onChange(function(v){
+        Flurry.buffer.dimMesh.material.opacity = v;
+    });
 };
 
 Flurry.onResize = function()
 {
     'use strict';
     console.log("[Main] Resizing renderer...");
-    var width  = window.innerWidth,
-        height = window.innerHeight,
-        zoom   = 1;
 
-    Flurry.camera.left   = 0  / -zoom;
-    Flurry.camera.right  = width  /  zoom;
-    Flurry.camera.bottom = 0 / -zoom;
-    Flurry.camera.top    = height /  zoom;
+    Flurry.camera.left   = 0;
+    Flurry.camera.right  = window.innerWidth;
+    Flurry.camera.bottom = 0;
+    Flurry.camera.top    = window.innerHeight;
     Flurry.camera.near   = -1;
     Flurry.camera.far    = 1;
-    Flurry.camera.aspect = width / height;
+    Flurry.camera.aspect = window.innerWidth / window.innerHeight;
 
+    Flurry.renderer.setSize(window.innerWidth, window.innerHeight);
     Flurry.camera.updateProjectionMatrix();
-    Flurry.renderer.setSize(width, height);
+    Flurry.renderer.clearTarget(Flurry.buffer.target, true, true, true);
+
+    Flurry.buffer.needsUpdate = true;
 };
