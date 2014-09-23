@@ -174,6 +174,8 @@ Flurry.Texture.create = function()
         THREE.LinearFilter, THREE.LinearMipMapNearestFilter, 1
     );
 
+    Flurry.Texture.ref.needsUpdate = true;
+
     // TODO: WebGL (TexEnvF shader?)
     // See http://graphics.snu.ac.kr/class/graphics2011/materials/ch14_glsl.pdf
 };

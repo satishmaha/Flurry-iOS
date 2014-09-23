@@ -35,20 +35,10 @@ Flurry.GLSaver.State.spark     = ArrayOf(Flurry.Spark, 64);
 Flurry.GLSaver.State.smoke     = new Flurry.Smoke();
 /** @type {Flurry.Star} */
 Flurry.GLSaver.State.star      = new Flurry.Star();
+/** @type {Flurry.Debug} */
+Flurry.GLSaver.State.debug     = new Flurry.Debug();
 /** @type {ColorModes} */
 Flurry.GLSaver.State.colorMode = ColorModes.tiedye;
-/** @type {Float32Array} */
-Flurry.GLSaver.State.starfieldColor    = new Float32Array(MAX_PARTICLES * 4 * 4);
-/** @type {Float32Array} */
-Flurry.GLSaver.State.starfieldVertices = new Float32Array(MAX_PARTICLES * 2 * 4);
-/** @type {Float32Array} */
-Flurry.GLSaver.State.starfieldTextures = new Float32Array(MAX_PARTICLES * 2 * 4);
-/** @type {number} */
-Flurry.GLSaver.State.starfieldColorIdx    = 0;
-/** @type {number} */
-Flurry.GLSaver.State.starfieldVerticesIdx = 0;
-/** @type {number} */
-Flurry.GLSaver.State.starfieldTexturesIdx = 0;
 /** @type {number} */
 Flurry.GLSaver.State.time      = 0; // fTime
 /** @type {number} */
@@ -93,9 +83,9 @@ Flurry.GLSaver.setup = function()
     Flurry.Texture.create();
 
     console.log("[GLSaver] Creating objects...");
+    state.debug.init();
     state.smoke.init();
     state.star.init();
-    state.star.rotSpeed = 1;
 
     for (var i = 0; i < 64; i++)
         state.spark[i].init();
@@ -111,17 +101,12 @@ Flurry.GLSaver.setup = function()
         state.spark[i].update();
 
     console.log("[GLSaver] Setting up scene...");
-    Flurry.scene.add( new THREE.AmbientLight( 0xFFFFFF ) );
-    Flurry.scene.add( cube );
-    Flurry.renderer.setClearColor(0x003366, 1);
-    Flurry.renderer.clear(true);
-    Flurry.camera.position.z = 5;
+    Flurry.scene.add( new THREE.AmbientLight(0xFFFFFF) );
+    Flurry.renderer.setClearColor(0x000000, 1);
+    Flurry.renderer.clear(true, true);
+    Flurry.camera.position.z = 0;
     state.oldTimer = glSaver.timeSinceStart() + state.randSeed;
 };
-
-var geometry = new THREE.BoxGeometry(0.2,0.2,0.2);
-var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-var cube     = new THREE.Mesh( geometry, material );
 
 /**
  * @static
@@ -148,10 +133,7 @@ Flurry.GLSaver.render = function()
 
     state.smoke.update();
     state.smoke.draw();
-
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.1;
-    cube.rotation.z -= 0.001;
+    state.debug.update();
 
     Flurry.renderer.render(Flurry.scene, Flurry.camera);
 };

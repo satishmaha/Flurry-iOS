@@ -1,0 +1,65 @@
+sPartMesh.geometry.faces[0].vertexColors[0].r = sPartData.color[0][0];
+sPartMesh.geometry.faces[0].vertexColors[0].g = sPartData.color[1][0];
+sPartMesh.geometry.faces[0].vertexColors[0].b = sPartData.color[2][0];
+
+sPartMesh.geometry.faces[0].vertexColors[1].r = sPartData.color[0][1];
+sPartMesh.geometry.faces[0].vertexColors[1].g = sPartData.color[1][1];
+sPartMesh.geometry.faces[0].vertexColors[1].b = sPartData.color[2][1];
+
+sPartMesh.geometry.faces[0].vertexColors[2].r = sPartData.color[0][2];
+sPartMesh.geometry.faces[0].vertexColors[2].g = sPartData.color[1][2];
+sPartMesh.geometry.faces[0].vertexColors[2].b = sPartData.color[2][2];
+
+sPartMesh.geometry.faces[1].vertexColors[0].r = sPartData.color[0][1];
+sPartMesh.geometry.faces[1].vertexColors[0].g = sPartData.color[1][1];
+sPartMesh.geometry.faces[1].vertexColors[0].b = sPartData.color[2][1];
+
+sPartMesh.geometry.faces[1].vertexColors[1].r = sPartData.color[0][2];
+sPartMesh.geometry.faces[1].vertexColors[1].g = sPartData.color[1][2];
+sPartMesh.geometry.faces[1].vertexColors[1].b = sPartData.color[2][2];
+
+sPartMesh.geometry.faces[1].vertexColors[2].r = sPartData.color[0][3];
+sPartMesh.geometry.faces[1].vertexColors[2].g = sPartData.color[1][3];
+sPartMesh.geometry.faces[1].vertexColors[2].b = sPartData.color[2][3];
+
+
+
+
+
+var idx = i*4;
+
+// Top left (0)
+sPartMesh.geometry.faces[0].vertexColors[0].r = state.smoke.seraphimColors[idx][1];
+sPartMesh.geometry.faces[0].vertexColors[0].g = state.smoke.seraphimColors[idx][2];
+sPartMesh.geometry.faces[0].vertexColors[0].b = state.smoke.seraphimColors[idx][3];
+idx++;
+
+// Bottom left (2)
+sPartMesh.geometry.faces[0].vertexColors[1].r = state.smoke.seraphimColors[idx][1];
+sPartMesh.geometry.faces[0].vertexColors[1].g = state.smoke.seraphimColors[idx][2];
+sPartMesh.geometry.faces[0].vertexColors[1].b = state.smoke.seraphimColors[idx][3];
+
+// Bottom left (2)
+sPartMesh.geometry.faces[1].vertexColors[0].r = state.smoke.seraphimColors[idx][1];
+sPartMesh.geometry.faces[1].vertexColors[0].g = state.smoke.seraphimColors[idx][2];
+sPartMesh.geometry.faces[1].vertexColors[0].b = state.smoke.seraphimColors[idx][3];
+idx++;
+
+// Bottom right (3)
+sPartMesh.geometry.faces[1].vertexColors[1].r = state.smoke.seraphimColors[idx][1];
+sPartMesh.geometry.faces[1].vertexColors[1].g = state.smoke.seraphimColors[idx][2];
+sPartMesh.geometry.faces[1].vertexColors[1].b = state.smoke.seraphimColors[idx][3];
+idx++;
+
+// Top right (1)
+sPartMesh.geometry.faces[0].vertexColors[2].r = state.smoke.seraphimColors[idx][1];
+sPartMesh.geometry.faces[0].vertexColors[2].g = state.smoke.seraphimColors[idx][2];
+sPartMesh.geometry.faces[0].vertexColors[2].b = state.smoke.seraphimColors[idx][3];
+
+// Top right  (1)
+sPartMesh.geometry.faces[1].vertexColors[2].r = state.smoke.seraphimColors[idx][1];
+sPartMesh.geometry.faces[1].vertexColors[2].g = state.smoke.seraphimColors[idx][2];
+sPartMesh.geometry.faces[1].vertexColors[2].b = state.smoke.seraphimColors[idx][3];
+
+// FACE A: 0, 2, 1 (or: top left, bottom left, top right)
+// FACE B: 2, 3, 1 (or: bottom left, bottom right, top right)

@@ -22,20 +22,8 @@ Flurry.Smoke = function()
     /** @type {number} */
     this.frame     = 0;
 
-    /** @type {Float32Array[]} */
-    this.seraphimVertices     = ArrayOf.Vector4F(MAX_SMOKE * 2 + 1);
-    this.seraphimVerticesFlat = new Float32Array((MAX_SMOKE * 2 + 1) * 4);
-    /** @type {Float32Array[]} */
-    this.seraphimColors   = ArrayOf.Vector4F(MAX_SMOKE * 4 + 1);
-    /** @type {Float32Array} */
-    this.seraphimTextures = new Float32Array(MAX_SMOKE * 2 * 4);
-
-    /** @type {BufferGeometry} */
-    this.geometry = null;
-    /** @type {MeshBasicMaterial} */
-    this.material = null;
-    /** @type {Mesh} */
-    this.mesh     = null;
+    /** @type {THREE.Mesh[]} */
+    this.quads = new Array(MAX_SMOKE / 4);
 
     this.init = function()
     {
@@ -51,16 +39,22 @@ Flurry.Smoke = function()
         for (var i = 0; i < 3; i++)
             this.oldPos[i] = Math.randFlt(-100, 100);
 
-        this.geometry = new THREE.BufferGeometry();
-        this.geometry.dynamic = true;
-        this.geometry.addAttribute( 'position', new THREE.BufferAttribute( this.seraphimVerticesFlat, 4 ) );
+        for (i = 0; i < MAX_SMOKE; i++)
+        {
+            var mesh = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), this.material);
+            mesh.material = new THREE.MeshLambertMaterial({
+                map: Flurry.Texture.ref, vertexColors: THREE.FaceColors,
+                shading: THREE.FlatShading, transparent: true, blending: THREE.AdditiveBlending
+            });
+            mesh.material.depthTest   = false;
+            mesh.material.depthWrite  = false;
+            mesh.material.needsUpdate = true;
+            mesh.material.opacity     = 0.0;
+            mesh.material.alphaTest   = 0.0;
 
-        this.material = new THREE.MeshBasicMaterial({
-            shading : THREE.FlatShading
-        });
-
-        this.mesh = new THREE.Mesh(this.geometry, this.material);
-        Flurry.scene.add(this.mesh);
+            this.quads[i] = mesh;
+            Flurry.scene.add(mesh);
+        }
     };
 
     this.update = function()
@@ -207,8 +201,8 @@ Flurry.Smoke = function()
             hslash2     = screenH * 0.5,
             width       = (config.streamSize + 2.5 * state.streamExpansion) * screenRatio;
 
-        for (var i = 0; i < MAX_SMOKE / 4; i++)
-        for (var k = 0; k < 4; k++)
+        for (var i = 0; i < MAX_SMOKE / 4; i++) // Per... group of four quads?
+        for (var k = 0; k < 4; k++)             // Per quad
         {
             if (this.particles[i].dead[k] == 1)
                 continue;
@@ -221,6 +215,7 @@ Flurry.Smoke = function()
                 continue;
             }
 
+            // Each particle is keeping positions of four quads ?
             var z    = this.particles[i].pos[2][k],
                 sx   = this.particles[i].pos[0][k] * screenW / z + wslash2,
                 sy   = this.particles[i].pos[1][k] * screenW / z + hslash2,
@@ -258,8 +253,8 @@ Flurry.Smoke = function()
 
             var u0 = (this.particles[i].frame[k] && 7) * 0.125,
                 v0 = (this.particles[i].frame[k] >> 3) * 0.125,
-                u1 = u0 + 0.25,
-                v1 = v0 + 0.25,
+                u1 = u0 + 0.125,
+                v1 = v0 + 0.125,
                 cm = (1.375 - thisWidth / width);
 
             if (this.particles[i].dead[k] == 3)
@@ -274,46 +269,35 @@ Flurry.Smoke = function()
             cmv[2] = this.particles[i].color[2][k] * cm;
             cmv[3] = this.particles[i].color[3][k] * cm;
 
-            this.seraphimColors[sci++] = cmv;
-            this.seraphimColors[sci++] = cmv;
-            this.seraphimColors[sci++] = cmv;
-            this.seraphimColors[sci++] = cmv;
+            this.quads[sci].geometry.faces[0].color.setRGB(cmv[0], cmv[1], cmv[2]);
+            this.quads[sci].geometry.faces[1].color.setRGB(cmv[0], cmv[1], cmv[2]);
+            this.quads[sci].material.opacity = cmv[3];
+            this.quads[sci].geometry.colorsNeedUpdate = true;
+            sci++;
 
-            this.seraphimTextures[sti++] = u0;
-            this.seraphimTextures[sti++] = v0;
-            this.seraphimTextures[sti++] = u0;
-            this.seraphimTextures[sti++] = v1;
+            // First index: layer (always 0)
+            // Second index: face (0 or 1)
+            // Third index: vertex (0, 1 or 2)
+            this.quads[sti].geometry.faceVertexUvs[0][0][0].set(u0, v0);
+            this.quads[sti].geometry.faceVertexUvs[0][0][1].set(u0, v1);
+            this.quads[sti].geometry.faceVertexUvs[0][0][2].set(u1, v0);
+            this.quads[sti].geometry.faceVertexUvs[0][1][0].set(u0, v1);
+            this.quads[sti].geometry.faceVertexUvs[0][1][1].set(u1, v1);
+            this.quads[sti].geometry.faceVertexUvs[0][1][2].set(u1, v0);
+            this.quads[sti].geometry.uvsNeedUpdate = true;
+            sti++;
 
-            this.seraphimTextures[sti++] = u1;
-            this.seraphimTextures[sti++] = v1;
-            this.seraphimTextures[sti++] = u1;
-            this.seraphimTextures[sti++] = v0;
-
-            this.seraphimVertices[svi][0] = sx + dxm - dys;
-            this.seraphimVertices[svi][1] = sy + dym + dxs;
-            this.seraphimVertices[svi][2] = sx + dxm + dys;
-            this.seraphimVertices[svi][3] = sy + dym - dxs;
-            svi++;
-
-            this.seraphimVertices[svi][0] = oldscreenx - dxm + dyos;
-            this.seraphimVertices[svi][1] = oldscreeny - dym - dxos;
-            this.seraphimVertices[svi][2] = oldscreenx - dxm - dyos;
-            this.seraphimVertices[svi][3] = oldscreeny - dym + dxos;
+            // Each seraphimVertices vector held the XY of two points in a quad
+            this.quads[svi].geometry.vertices[0].x = sx + dxm - dys;
+            this.quads[svi].geometry.vertices[0].y = sy + dym + dxs;
+            this.quads[svi].geometry.vertices[1].x = sx + dxm + dys;
+            this.quads[svi].geometry.vertices[1].y = sy + dym - dxs;
+            this.quads[svi].geometry.vertices[2].x = oldscreenx - dxm - dyos;
+            this.quads[svi].geometry.vertices[2].y = oldscreeny - dym + dxos;
+            this.quads[svi].geometry.vertices[3].x = oldscreenx - dxm + dyos;
+            this.quads[svi].geometry.vertices[3].y = oldscreeny - dym - dxos;
+            this.quads[svi].geometry.verticesNeedUpdate = true;
             svi++;
         }
-
-        // Flatten seraphimVertices
-        // TODO: Optimize!! This is a rushed implementation...
-        for (i = 0; i < (MAX_SMOKE * 2 + 1); i++)
-        {
-            var offset = i * 4;
-            this.seraphimVerticesFlat[offset+0] = this.seraphimVertices[i][0];
-            this.seraphimVerticesFlat[offset+1] = this.seraphimVertices[i][1];
-            this.seraphimVerticesFlat[offset+2] = this.seraphimVertices[i][2];
-            this.seraphimVerticesFlat[offset+3] = this.seraphimVertices[i][3];
-        }
-
-        this.geometry.verticesNeedUpdate = true;
-        //this.geometry.computeBoundingSphere();
     };
 };

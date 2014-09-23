@@ -1,3 +1,18 @@
+## Note 8
+
+I think I may have made a wrong assumption about the Smoke draw loop; that it was
+iterating over every *vertex*. It seems, however, it is iterating per *quad*.
+
+## Note 7
+
+Writing WebGL code myself is turning out to be too error-prone and verbose. I am opting
+instead to use Three.JS.
+
+Now the code is based on Three.JS and I have basic rendering working, which means the
+final step is to have Flurry properly speaking WebGL/Three.JS's language. The biggest
+hurdle is transforming Flurry's used of quads (4 verticies per polygon) to WebGL's
+triangles (3 verticies per polygon).
+
 ## Note 6
 
 After working on the AltiVec-based vector code for Smoke.js for a while, I found myself
