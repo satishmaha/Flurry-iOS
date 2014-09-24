@@ -266,14 +266,15 @@ Flurry.Smoke = function()
                 quad.geometry.uvsNeedUpdate = true;
 
                 // Each seraphimVertices vector held the XY of two points in a quad
-                quad.geometry.vertices[0].x = sx + dxm - dys;
-                quad.geometry.vertices[0].y = sy + dym + dxs;
-                quad.geometry.vertices[1].x = sx + dxm + dys;
-                quad.geometry.vertices[1].y = sy + dym - dxs;
-                quad.geometry.vertices[2].x = oldscreenx - dxm - dyos;
-                quad.geometry.vertices[2].y = oldscreeny - dym + dxos;
-                quad.geometry.vertices[3].x = oldscreenx - dxm + dyos;
-                quad.geometry.vertices[3].y = oldscreeny - dym - dxos;
+                var offset = (k-2) * config.focus;
+                quad.geometry.vertices[0].x = sx + dxm - dys + offset;
+                quad.geometry.vertices[0].y = sy + dym + dxs + offset;
+                quad.geometry.vertices[1].x = sx + dxm + dys + offset;
+                quad.geometry.vertices[1].y = sy + dym - dxs + offset;
+                quad.geometry.vertices[2].x = oldscreenx - dxm - dyos + offset;
+                quad.geometry.vertices[2].y = oldscreeny - dym + dxos + offset;
+                quad.geometry.vertices[3].x = oldscreenx - dxm + dyos + offset;
+                quad.geometry.vertices[3].y = oldscreeny - dym - dxos + offset;
                 quad.geometry.verticesNeedUpdate = true;
                 si++;
             }

@@ -75,6 +75,7 @@ Flurry.setupGui = function()
     gui.add(config, 'colorIncoherence', 0, 3);
     gui.add(config, 'colorMode', ColorModes);
     var cfgFade = gui.add(config, 'fade', 0, 1);
+    gui.add(config, 'focus', 0, 200);
     gui.add(config, 'gravity', 0, 6000000).step(1500);
     gui.add(config, 'incohesion', 0, 1);
     gui.add(config, 'seraphDistance', 0, 5000);

@@ -19,6 +19,7 @@ Flurry.GLSaver.Config = {
     colorIncoherence : 0.15,
     colorMode        : ColorModes.tiedye,
     fade             : 0.1,
+    focus            : 0,
     gravity          : 1500000.0,
     incohesion       : 0.07,
     fieldCoherence   : 0,
