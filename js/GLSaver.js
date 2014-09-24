@@ -81,7 +81,6 @@ Flurry.GLSaver.setup = function()
     Flurry.Texture.create();
 
     console.log("[GLSaver] Creating objects...");
-    state.debug.init();
     state.smoke.init();
     state.star.init();
 
@@ -98,6 +97,9 @@ Flurry.GLSaver.setup = function()
     for (i = 0; i < 12; i++)
         state.spark[i].update();
 
+    if (DEBUG)
+        state.debug.init();
+
     console.log("[GLSaver] Setting up scene...");
     Flurry.scene.add( new THREE.AmbientLight(0xFFFFFF) );
     state.oldTimer = glSaver.timeSinceStart() + state.randSeed;
@@ -111,7 +113,7 @@ Flurry.GLSaver.render = function()
 {
     'use strict';
     window.requestAnimationFrame(Flurry.GLSaver.render, null);
-    Flurry.stats.begin();
+
 
     var state  = Flurry.GLSaver.State,
         config = Flurry.GLSaver.Config;
@@ -135,7 +137,10 @@ Flurry.GLSaver.render = function()
     Flurry.renderer.render(Flurry.scene, Flurry.camera, Flurry.buffer.target, false);
     Flurry.renderer.render(Flurry.buffer.scene, Flurry.camera, null, false);
 
-    state.debug.update();
-    state.debug.render();
-    Flurry.stats.end();
+    if (DEBUG)
+    {
+        state.debug.update();
+        state.debug.render();
+        Flurry.stats.update();
+    }
 };

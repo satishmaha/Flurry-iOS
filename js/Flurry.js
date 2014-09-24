@@ -2,9 +2,10 @@
 // Based off original code from https://github.com/calumr/flurry
 
 // Constants
-var MAX_SMOKE     = 3600, // Originally 3600
-    MAX_ANGLES    = 16384,
-    BIG_MYSTERY   = 1800;
+var MAX_SMOKE   = 3600, // Originally 3600
+    MAX_ANGLES  = 16384,
+    BIG_MYSTERY = 1800,
+    DEBUG       = false;
 
 /**
  * The global object and namespace for the Flurry application
@@ -57,10 +58,15 @@ Flurry.setupGui = function()
 {
     'use strict';
     Flurry.gui   = new dat.GUI();
-    Flurry.stats = new Stats();
-    Flurry.stats.domElement.style.position = 'absolute';
-    Flurry.stats.domElement.style.top      = '0px';
-    document.body.appendChild( Flurry.stats.domElement );
+
+    if (DEBUG)
+    {
+        Flurry.stats = new Stats();
+        Flurry.stats.begin();
+        Flurry.stats.domElement.style.position = 'absolute';
+        Flurry.stats.domElement.style.top = '0px';
+        document.body.appendChild(Flurry.stats.domElement);
+    }
 
     var gui    = Flurry.gui,
         config = Flurry.GLSaver.Config;

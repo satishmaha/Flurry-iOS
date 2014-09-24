@@ -5,8 +5,6 @@
 Flurry.Debug = function()
 {
     'use strict';
-
-    this.enabled = false;
     this.scene   = null;
 
     this.texGeo  = null;
@@ -22,9 +20,6 @@ Flurry.Debug = function()
     this.init = function()
     {
         'use strict';
-
-        if (!this.enabled)
-            return;
 
         this.scene = new THREE.Scene();
         this.scene.add( new THREE.AmbientLight(0xFFFFFF) );
@@ -63,8 +58,6 @@ Flurry.Debug = function()
     this.update = function()
     {
         'use strict';
-        if (!this.enabled)
-            return;
 
         var glSaver = Flurry.GLSaver,
             state   = glSaver.State;
@@ -80,8 +73,6 @@ Flurry.Debug = function()
     this.render = function()
     {
         'use strict';
-        if (!this.enabled)
-            return;
 
         Flurry.renderer.render(this.scene, Flurry.camera, null, false);
     }
