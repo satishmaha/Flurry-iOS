@@ -57,7 +57,7 @@ Flurry.main = function()
 Flurry.setupGui = function()
 {
     'use strict';
-    Flurry.gui   = new dat.GUI();
+    Flurry.gui = new dat.GUI({load: FlurryPresets});
 
     if (DEBUG)
     {
@@ -71,14 +71,19 @@ Flurry.setupGui = function()
     var gui    = Flurry.gui,
         config = Flurry.GLSaver.Config;
 
-    gui.add(config, 'brightness', 0, 5);
-    gui.add(config, 'colorIncoherence', 0, 3);
-    gui.add(config, 'colorMode', ColorModes);
-    var cfgFade = gui.add(config, 'fade', 0, 1);
+    gui.remember(config);
     gui.add(config, 'focus', 0, 200);
     gui.add(config, 'gravity', 0, 6000000).step(1500);
     gui.add(config, 'incohesion', 0, 1);
     gui.add(config, 'seraphDistance', 0, 5000);
+
+    var f0 = gui.addFolder('Color');
+    var cfgBCol  = f0.addColor(config, 'backColor');
+    var cfgBlend = f0.add(config, 'blendMode', BlendModes);
+    var cfgColor = f0.add(config, 'colorMode', ColorModes);
+    var cfgFade  = f0.add(config, 'fade', 0, 1);
+    f0.add(config, 'brightness', 0, 5);
+    f0.add(config, 'colorIncoherence', 0, 3);
 
     var f1 = gui.addFolder('Field');
     f1.add(config, 'fieldCoherence', 0, 10);
@@ -92,8 +97,15 @@ Flurry.setupGui = function()
     f2.add(config, 'streamSize', 0, 50000);
     f2.add(config, 'streamSpeed', 0, 1000);
 
-    cfgFade.onChange(function(v){
-        Flurry.buffer.dimMesh.material.opacity = v;
+    cfgBCol.onChange(function(v)  { Flurry.buffer.dimMesh.material.color.setStyle(v); });
+    cfgColor.onChange(function(v) { Flurry.GLSaver.Config.colorMode = Number(v); });
+    cfgFade.onChange(function(v)  { Flurry.buffer.dimMesh.material.opacity = v; });
+
+    cfgBlend.onChange(function(v)
+    {
+        Flurry.GLSaver.State.smoke.particles.forEach(function(p) {
+            p.blendMode(v);
+        });
     });
 };
 

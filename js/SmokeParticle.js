@@ -59,4 +59,10 @@ Flurry.SmokeParticle = function()
         }
     };
 
+    this.blendMode = function(mode)
+    {
+        for (var i = 0; i < 4; i++)
+            this.quads[i].material.blending = Number(mode);
+    };
+
 };

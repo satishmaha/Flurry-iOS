@@ -98,13 +98,13 @@ Flurry.Spark = function()
 
         switch (config.colorMode)
         {
-            case ColorModes.rainbow:
+            case ColorModes.Rainbow:
                 cycleTime = 1.5; break;
-            case ColorModes.tiedye:
+            case ColorModes.Tiedye:
                 cycleTime = 4.5; break;
-            case ColorModes.cyclic:
+            case ColorModes.Cyclic:
                 cycleTime = 20; break;
-            case ColorModes.slowCyclic:
+            case ColorModes.SlowCyclic:
             default:
                 cycleTime = 120; break;
         }
@@ -116,27 +116,27 @@ Flurry.Spark = function()
             colorTime       = state.time,
             baseRed, baseGreen, baseBlue;
 
-        if (config.colorMode == ColorModes.white)
+        if (config.colorMode == ColorModes.White)
         {
             baseRed   = 0.1875;
             baseGreen = 0.1875;
             baseBlue  = 0.1875;
         }
-        else if (config.colorMode == ColorModes.multi)
+        else if (config.colorMode == ColorModes.Multi)
         {
             baseRed   = 0.0625;
             baseGreen = 0.0625;
             baseBlue  = 0.0625;
         }
-        else if (config.colorMode == ColorModes.dark)
+        else if (config.colorMode == ColorModes.Dark)
         {
-            baseRed  = 0.0;
+            baseRed   = 0.0;
             baseGreen = 0.0;
             baseBlue  = 0.0;
         }
         else
         {
-            if (config.colorMode < ColorModes.slowCyclic)
+            if (config.colorMode < ColorModes.SlowCyclic)
                 colorTime = (config.colorMode / 6) * cycleTime;
             else
                 colorTime = state.time + state.randSeed;

@@ -15,9 +15,11 @@ Flurry.GLSaver = {};
 Flurry.GLSaver.timeCounter = 0;
 
 Flurry.GLSaver.Config = {
+    backColor        : 0x000000,
+    blendMode        : BlendModes.Additive,
     brightness       : 1,
     colorIncoherence : 0.15,
-    colorMode        : ColorModes.tiedye,
+    colorMode        : ColorModes.Tiedye,
     fade             : 0.1,
     focus            : 0,
     gravity          : 1500000.0,

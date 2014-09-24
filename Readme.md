@@ -18,8 +18,9 @@ This is run through a single HTML page that links to many javascript files, usin
 * **Smoke.js** - Represents the particle emitter that gives physics to and draws the particle meshes, making use of the flurry's star and sparks
 * **SmokeParticle.js** - Represents a group of four particle quads (unsure why particles are grouped in fours)
 * **Texture.js** - Generates and holds the texture that the smoke particles use (actually an 8x8 grid of spots, each one with added speckle)
+* **data/** - Holds pre-defined data, such as presets
+* **enums/** - Holds enums, such as those for colors and blend modes
 * **util/ArrayOf.js** - Helper methods for creating an Array of something (with each element already initialized)
-* **util/ColorModes.js** - Color modes enum
 * **util/Math.js** - Extension to Javascript standard `Math` to provide some Clib-like functions
 * **util/Vectors.js** - Helper methods for creating "vectors" using typed arrays
 
