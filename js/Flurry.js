@@ -2,7 +2,7 @@
 // Based off original code from https://github.com/calumr/flurry
 
 // Constants
-var MAX_SMOKE   = 3600, // Originally 3600
+var MAX_SMOKE   = 1800, // Originally 3600
     MAX_ANGLES  = 16384,
     BIG_MYSTERY = 1800;
 
@@ -27,14 +27,16 @@ Flurry.gui = null;
 /**
  * Entry point for Flurry
  */
-Flurry.main = function()
+Flurry.main = function(canvas)
 {
     'use strict';
     console.log("[Main] Setting up a THREE.js scene and DOM...");
-    Flurry.scene    = new THREE.Scene();
-    Flurry.camera   = new THREE.OrthographicCamera();
-    Flurry.renderer = new THREE.WebGLRenderer({ antialias: false });
-    Flurry.buffer   = new Flurry.Buffer();
+    Flurry.renderer = new THREE.WebGLRenderer({
+        antialias: false, canvas: document.getElementById(canvas)
+    });
+    Flurry.scene  = new THREE.Scene();
+    Flurry.camera = new THREE.OrthographicCamera();
+    Flurry.buffer = new Flurry.Buffer();
     Flurry.renderer.setFaceCulling(THREE.CullFaceNone);
     Flurry.renderer.setDepthTest(false);
     Flurry.renderer.setDepthWrite(false);
@@ -90,7 +92,7 @@ Flurry.setupGui = function()
     f1.add(config, 'fieldRange', 0, 500);
 
     var f2 = gui.addFolder('Streams');
-    f2.add(config, 'numStreams', 1, 64).step(1);
+    f2.add(config, 'numStreams', 1, 32).step(1);
     f2.add(config, 'streamBias', 0, 50);
     f2.add(config, 'streamExpansion', 1, 250);
     f2.add(config, 'streamSize', 0, 100);

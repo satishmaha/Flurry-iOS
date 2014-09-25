@@ -36,7 +36,7 @@ Flurry.Presets = {
                 "backColor": 0,
                 "blendMode": 2,
                 "colorMode": 8,
-                "fade": 0.022057556436326037,
+                "fade": 0.02,
                 "brightness": 5,
                 "colorIncoherence": 0.15,
                 "fieldCoherence": 0,
@@ -201,6 +201,30 @@ Flurry.Presets = {
             "streamExpansion": 100,
             "streamSize": 20,
             "streamSpeed": 100
+        }
+    },
+    "Spider": {
+        "0": {
+            "focus": 0,
+            "gravity": 162.5740897544454,
+            "incohesion": 0,
+            "seraphDistance": 200,
+            "backColor": "#ffffff",
+            "blendMode": "3",
+            "colorMode": 10,
+            "fade": 0.5,
+            "brightness": 1.047733930725487,
+            "colorIncoherence": 0,
+            "fieldCoherence": 10,
+            "fieldSpeed": 3.3086334654489056,
+            "fieldRange": 500,
+            "numStreams": 8,
+            "streamBias": 25.366189901774945,
+            "streamExpansion": 250,
+            "streamSize": 3.3086334654489056,
+            "streamSpeed": 100,
+            "debug": false,
+            "debugFps": false
         }
     }
 },
