@@ -170,22 +170,23 @@ Flurry.Smoke = function()
         'use strict';
 
         var particle, quad,
-            si      = 0,
-            state   = Flurry.GLSaver.State,
-            config  = Flurry.Config,
-            screenW = Flurry.renderer.domElement.clientWidth,
-            screenH = Flurry.renderer.domElement.clientHeight,
-
+            si          = 0,
+            state       = Flurry.GLSaver.State,
+            config      = Flurry.Config,
+            screenW     = Flurry.renderer.domElement.clientWidth,
+            screenH     = Flurry.renderer.domElement.clientHeight,
             screenRatio = screenW / screenH,
             wslash2     = screenW * 0.5,
             hslash2     = screenH * 0.5,
-            width       = (config.streamSize * 1000 + 2.5 * config.streamExpansion) * screenRatio;
+            streamSize  = config.streamSize * 1000,
+            width       = (streamSize + 2.5 * config.streamExpansion) * screenRatio;
 
-        for (var i = 0; i < MAX_SMOKE / 4; i++) // Per... group of four quads?
+        // Per particle (group of four quads)
+        for (var i = 0; i < MAX_SMOKE / 4; i++)
         {
             particle = this.particles[i];
-
-            for (var k = 0; k < 4; k++)             // Per quad
+            // Per quad in a particle
+            for (var k = 0; k < 4; k++)
             {
                 quad = particle.quads[k];
                 quad.visible = false;
@@ -193,7 +194,7 @@ Flurry.Smoke = function()
                 if (this.particles[i].dead[k] == 1)
                     continue;
 
-                var thisWidth = (config.streamSize * 1000 + (state.time - this.particles[i].time[k]) * config.streamExpansion) * screenRatio;
+                var thisWidth = (streamSize + (state.time - this.particles[i].time[k]) * config.streamExpansion) * screenRatio;
 
                 if (thisWidth >= width)
                 {
@@ -202,15 +203,16 @@ Flurry.Smoke = function()
                 }
 
                 // Each particle is keeping positions of four quads ?
-                var z = this.particles[i].pos[2][k],
-                    sx = this.particles[i].pos[0][k] * screenW / z + wslash2,
-                    sy = this.particles[i].pos[1][k] * screenW / z + hslash2,
+                var z    = this.particles[i].pos[2][k],
+                    sx   = this.particles[i].pos[0][k] * screenW / z + wslash2,
+                    sy   = this.particles[i].pos[1][k] * screenW / z + hslash2,
                     oldz = this.particles[i].oldPos[2][k];
 
+                // Do not draw if out of bounds
                 if (sx > screenW + 50 || sx < -50 || sy > screenH + 50 || sy < -50 || z < 25 || oldz < 25.)
                     continue;
 
-                var w = Math.max(1, thisWidth / z),
+                var w    = Math.max(1, thisWidth / z),
                     oldx = this.particles[i].oldPos[0][k],
                     oldy = this.particles[i].oldPos[1][k],
 
@@ -218,19 +220,19 @@ Flurry.Smoke = function()
                     oldscreeny = (oldy * screenW / oldz) + hslash2,
                     dx = (sx - oldscreenx),
                     dy = (sy - oldscreeny),
-                    d = Math.fastDist2D(dx, dy),
+                    d  = Math.fastDist2D(dx, dy),
                     sm = d ? w / d : 0.0,
                     ow = Math.max(1, thisWidth / oldz),
                     os = d ? ow / d : 0.0;
 
-                var cmv = Vector4F(),
-                    m = 1 + sm,
-                    dxs = dx * sm,
-                    dys = dy * sm,
+                var cmv  = Vector4F(),
+                    m    = 1 + sm,
+                    dxs  = dx * sm,
+                    dys  = dy * sm,
                     dxos = dx * os,
                     dyos = dy * os,
-                    dxm = dx * m,
-                    dym = dy * m;
+                    dxm  = dx * m,
+                    dym  = dy * m;
 
                 this.particles[i].frame[k]++;
 
@@ -241,7 +243,7 @@ Flurry.Smoke = function()
                     v0 = (this.particles[i].frame[k] >> 3) * 0.125,
                     u1 = u0 + 0.125,
                     v1 = v0 + 0.125,
-                    cm = (1.375 - thisWidth / width) * config.brightness;
+                    cm = 0.375 * config.brightness;
 
                 quad.visible = true;
                 cmv[0] = this.particles[i].color[0][k] * cm;
