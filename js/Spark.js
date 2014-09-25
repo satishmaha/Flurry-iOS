@@ -28,7 +28,7 @@ Flurry.Spark = function()
         'use strict';
 
         var state  = Flurry.GLSaver.State,
-            config = Flurry.GLSaver.Config,
+            config = Flurry.Config,
 
             rotsPerSecond = 2 * Math.PI * config.fieldSpeed / MAX_ANGLES;
 
@@ -50,9 +50,9 @@ Flurry.Spark = function()
         cf /= 6.0;
         cf += 2.0;
 
-        this.pos[0] = config.fieldRange * cf * Math.cos(11.0 * (thisPointInRadians + (3.0*thisAngle)));
-        this.pos[1] = config.fieldRange * cf * Math.sin(12.0 * (thisPointInRadians + (4.0*thisAngle)));
-        this.pos[2] = config.fieldRange * Math.cos((23.0 * (thisPointInRadians + (12.0*thisAngle))));
+        this.pos[0] = config.fieldRange * 10 * cf * Math.cos(11.0 * (thisPointInRadians + (3.0*thisAngle)));
+        this.pos[1] = config.fieldRange * 10 * cf * Math.sin(12.0 * (thisPointInRadians + (4.0*thisAngle)));
+        this.pos[2] = config.fieldRange * 10 * Math.cos((23.0 * (thisPointInRadians + (12.0*thisAngle))));
 
         var rotation = thisAngle * 0.501 + 5.01 * this.mystery / BIG_MYSTERY,
             cr    = Math.cos(rotation),
@@ -67,7 +67,7 @@ Flurry.Spark = function()
 
             tmpX3 = tmpX2,
             tmpY3 = tmpY2 * cr - tmpZ2 * sr,
-            tmpZ3 = tmpZ2 * cr + tmpY2 * sr + config.seraphDistance;
+            tmpZ3 = tmpZ2 * cr + tmpY2 * sr + config.seraphDistance * 10;
 
         rotation = thisAngle * 2.501 + 85.01 * this.mystery / BIG_MYSTERY;
         cr = Math.cos(rotation);
@@ -90,7 +90,7 @@ Flurry.Spark = function()
         'use strict';
 
         var state  = Flurry.GLSaver.State,
-            config = Flurry.GLSaver.Config,
+            config = Flurry.Config,
             rotsPerSecond = 2 * Math.PI * config.fieldSpeed / MAX_ANGLES;
 
         var thisAngle = state.time * rotsPerSecond,

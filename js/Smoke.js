@@ -45,7 +45,7 @@ Flurry.Smoke = function()
         'use strict';
 
         var state   = Flurry.GLSaver.State,
-            config  = Flurry.GLSaver.Config,
+            config  = Flurry.Config,
             starPos = Vector3F(state.star.pos);
 
         this.frame++;
@@ -79,7 +79,7 @@ Flurry.Smoke = function()
                     dY  = this.particles[this.nextParticle].pos[1][this.nextSubParticle] - state.spark[i].pos[1],
                     dZ  = this.particles[this.nextParticle].pos[2][this.nextSubParticle] - state.spark[i].pos[2],
                     rsq = (dX*dX+dY*dY+dZ*dZ),
-                    f   = config.streamSpeed * streamSpeedCoherenceFactor,
+                    f   = config.streamSpeed * 10 * streamSpeedCoherenceFactor,
                     mag = f / Math.sqrt(rsq);
 
                 this.particles[this.nextParticle].deltaPos[0][this.nextSubParticle] -= (dX * mag);
@@ -131,7 +131,7 @@ Flurry.Smoke = function()
                 dY  = this.particles[i].pos[1][k] - state.spark[j].pos[1];
                 dZ  = this.particles[i].pos[2][k] - state.spark[j].pos[2];
                 rsq = (dX*dX+dY*dY+dZ*dZ);
-                f   = (config.gravity / rsq) * frameRateModifier;
+                f   = ((config.gravity * 10000) / rsq) * frameRateModifier;
 
                 if ( (((i*4)+k) % config.numStreams) == j )
                     f *= 1 + config.streamBias;
@@ -172,14 +172,14 @@ Flurry.Smoke = function()
         var particle, quad,
             si      = 0,
             state   = Flurry.GLSaver.State,
-            config  = Flurry.GLSaver.Config,
+            config  = Flurry.Config,
             screenW = Flurry.renderer.domElement.clientWidth,
             screenH = Flurry.renderer.domElement.clientHeight,
 
-            screenRatio = screenW / 1024,
+            screenRatio = screenW / screenH,
             wslash2     = screenW * 0.5,
             hslash2     = screenH * 0.5,
-            width       = (config.streamSize + 2.5 * config.streamExpansion) * screenRatio;
+            width       = (config.streamSize * 1000 + 2.5 * config.streamExpansion) * screenRatio;
 
         for (var i = 0; i < MAX_SMOKE / 4; i++) // Per... group of four quads?
         {
@@ -193,7 +193,7 @@ Flurry.Smoke = function()
                 if (this.particles[i].dead[k] == 1)
                     continue;
 
-                var thisWidth = (config.streamSize + (state.time - this.particles[i].time[k]) * config.streamExpansion) * screenRatio;
+                var thisWidth = (config.streamSize * 1000 + (state.time - this.particles[i].time[k]) * config.streamExpansion) * screenRatio;
 
                 if (thisWidth >= width)
                 {

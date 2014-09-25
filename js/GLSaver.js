@@ -14,26 +14,6 @@ Flurry.GLSaver = {};
  */
 Flurry.GLSaver.timeCounter = 0;
 
-Flurry.GLSaver.Config = {
-    backColor        : 0x000000,
-    blendMode        : BlendModes.Additive,
-    brightness       : 1,
-    colorIncoherence : 0.15,
-    colorMode        : ColorModes.Tiedye,
-    fade             : 0.1,
-    focus            : 0,
-    gravity          : 1500000.0,
-    incohesion       : 0.07,
-    fieldCoherence   : 0,
-    fieldSpeed       : 12.0,
-    fieldRange       : 1000.0,
-    seraphDistance   : 2000.0,
-    numStreams       : 5,
-    streamBias       : 7.0,
-    streamExpansion  : 100,
-    streamSize       : 25000.0,
-    streamSpeed      : 450.0
-};
 
 Flurry.GLSaver.State = {};
 /** @type {Flurry.Spark[]} */
@@ -77,6 +57,7 @@ Flurry.GLSaver.setup = function()
     var glSaver = Flurry.GLSaver,
         state   = glSaver.State;
 
+
     if (Flurry.GLSaver.timeCounter == 0)
         Flurry.GLSaver.timeCounter = Date.now();
 
@@ -86,6 +67,7 @@ Flurry.GLSaver.setup = function()
     console.log("[GLSaver] Creating objects...");
     state.smoke.init();
     state.star.init();
+    state.debug.init();
 
     for (var i = 0; i < 64; i++)
         state.spark[i].init();
@@ -99,9 +81,6 @@ Flurry.GLSaver.setup = function()
 
     for (i = 0; i < 12; i++)
         state.spark[i].update();
-
-    if (DEBUG)
-        state.debug.init();
 
     console.log("[GLSaver] Setting up scene...");
     Flurry.scene.add( new THREE.AmbientLight(0xFFFFFF) );
@@ -117,9 +96,8 @@ Flurry.GLSaver.render = function()
     'use strict';
     window.requestAnimationFrame(Flurry.GLSaver.render, null);
 
-
     var state  = Flurry.GLSaver.State,
-        config = Flurry.GLSaver.Config;
+        config = Flurry.Config;
 
     state.frame++;
     state.oldTime   = state.time;
@@ -140,10 +118,12 @@ Flurry.GLSaver.render = function()
     Flurry.renderer.render(Flurry.scene, Flurry.camera, Flurry.buffer.target, false);
     Flurry.renderer.render(Flurry.buffer.scene, Flurry.camera, null, false);
 
-    if (DEBUG)
+    if (config.debug)
     {
         state.debug.update();
         state.debug.render();
-        Flurry.stats.update();
     }
+
+    if (config.debugFps)
+        Flurry.stats.update();
 };

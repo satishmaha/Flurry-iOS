@@ -5,6 +5,7 @@
 Flurry.Debug = function()
 {
     'use strict';
+    this.enabled = false;
     this.scene   = null;
 
     this.texGeo  = null;
@@ -46,7 +47,7 @@ Flurry.Debug = function()
             new THREE.MeshLambertMaterial({
                 map: Flurry.buffer.target,
                 color: 0x000000, ambient: 0xFFFFFF,
-                shading: THREE.FlatShading, transparent: false
+                shading: THREE.FlatShading, transparent: true
         }));
 
         this.bufferMesh.position.x = 256 + 128;

@@ -24,7 +24,7 @@ Flurry.Buffer = function()
     this.dimScene = new THREE.Scene();
     this.dimMesh  = new THREE.Mesh(
         new THREE.PlaneGeometry(window.innerWidth, window.innerHeight),
-        new THREE.MeshBasicMaterial({ color: Flurry.GLSaver.Config.backColor, shading: THREE.FlatShading, transparent: true })
+        new THREE.MeshBasicMaterial({ color: Flurry.Config.backColor, shading: THREE.FlatShading, transparent: true })
     );
 
     this.dimMesh.material.opacity = 0.1;
