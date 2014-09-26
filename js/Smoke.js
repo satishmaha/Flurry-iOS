@@ -22,6 +22,40 @@ Flurry.Smoke = function()
     /** @type {number} */
     this.frame     = 0;
 
+    /**
+     * The buffer geometry mesh that represents the entire Flurry
+     * @type {THREE.Mesh}
+     */
+    this.seraphimMesh = null;
+
+    /**
+     * Buffer for the smoke mesh vertex positions. Big enough for each particle, times
+     * four verticies, times two components (XY)
+     * @type {Float32Array}
+     */
+    this.seraphimVertices = new Float32Array(MAX_SMOKE * 4 * 2);
+
+    /**
+     * Buffer for the smoke mesh vertex indicies. Each particle is made up of two
+     * triangles, so six indices per particle.
+     * @type {Float32Array}
+     */
+    this.seraphimIndicies = new Uint16Array(MAX_SMOKE * 6);
+
+    /**
+     * Buffer for the smoke mesh vertex UV coords. For each particle, times four
+     * verticies, times two components (UV)
+     * @type {Float32Array}
+     */
+    this.seraphimTextures = new Float32Array(MAX_SMOKE * 4 * 2);
+
+    /**
+     * Buffer for the smoke mesh vertex colors. For each particle, times four verticies,
+     * times four components (RGBA)
+     * @type {Float32Array}
+     */
+    this.seraphimColors = new Float32Array(MAX_SMOKE * 4 * 4);
+
     this.init = function()
     {
         'use strict';
@@ -36,8 +70,22 @@ Flurry.Smoke = function()
         for (var i = 0; i < 3; i++)
             this.oldPos[i] = Math.randFlt(-100, 100);
 
-        for (i = 0; i < MAX_SMOKE / 4; i++)
-            this.particles[i].init();
+        this.seraphimMesh = new THREE.Mesh(
+            new THREE.BufferGeometry(),
+            new THREE.RawShaderMaterial({
+                map : Flurry.Texture.ref,
+                vertexShader   : document.getElementById( 'vertexShader' ).textContent,
+                fragmentShader : document.getElementById( 'fragShader' ).textContent,
+                shading: THREE.FlatShading, transparent: true, blending: THREE.AdditiveBlending
+            })
+        );
+
+        this.seraphimMesh.geometry.addAttribute('position', new THREE.BufferAttribute(this.seraphimVertices, 2));
+        this.seraphimMesh.geometry.addAttribute('index',    new THREE.BufferAttribute(this.seraphimIndicies, 1));
+        this.seraphimMesh.geometry.addAttribute('uv',       new THREE.BufferAttribute(this.seraphimTextures, 2));
+        this.seraphimMesh.geometry.addAttribute('color',    new THREE.BufferAttribute(this.seraphimColors,   4));
+
+        Flurry.scene.add(this.seraphimMesh);
     };
 
     this.update = function()
@@ -169,8 +217,13 @@ Flurry.Smoke = function()
     {
         'use strict';
 
-        var particle, quad,
-            si          = 0,
+        var particle,
+            svii = 0,
+            svi  = 0,
+            sii  = 0,
+            sti  = 0,
+            sci  = 0,
+            si   = 0,
             state       = Flurry.GLSaver.State,
             config      = Flurry.Config,
             screenW     = Flurry.renderer.domElement.clientWidth,
@@ -188,9 +241,6 @@ Flurry.Smoke = function()
             // Per quad in a particle
             for (var k = 0; k < 4; k++)
             {
-                quad = particle.quads[k];
-                quad.visible = false;
-
                 if (this.particles[i].dead[k] == 1)
                     continue;
 
@@ -202,7 +252,6 @@ Flurry.Smoke = function()
                     continue;
                 }
 
-                // Each particle is keeping positions of four quads ?
                 var z    = this.particles[i].pos[2][k],
                     sx   = this.particles[i].pos[0][k] * screenW / z + wslash2,
                     sy   = this.particles[i].pos[1][k] * screenW / z + hslash2,
@@ -245,40 +294,52 @@ Flurry.Smoke = function()
                     v1 = v0 + 0.125,
                     cm = 0.375 * config.brightness;
 
-                quad.visible = true;
                 cmv[0] = this.particles[i].color[0][k] * cm;
                 cmv[1] = this.particles[i].color[1][k] * cm;
                 cmv[2] = this.particles[i].color[2][k] * cm;
                 cmv[3] = this.particles[i].color[3][k] * cm;
 
-                quad.geometry.faces[0].color.setRGB(cmv[0], cmv[1], cmv[2]);
-                quad.geometry.faces[1].color.setRGB(cmv[0], cmv[1], cmv[2]);
-                quad.material.opacity = cmv[3];
-                quad.geometry.colorsNeedUpdate = true;
+                for (var ci = 0; ci < 4; ci++)
+                {
+                    this.seraphimColors[sci++] = cmv[0];
+                    this.seraphimColors[sci++] = cmv[1];
+                    this.seraphimColors[sci++] = cmv[2];
+                    this.seraphimColors[sci++] = cmv[3];
+                }
 
-                // First index: layer (always 0)
-                // Second index: face (0 or 1)
-                // Third index: vertex (0, 1 or 2)
-                quad.geometry.faceVertexUvs[0][0][0].set(u0, v0);
-                quad.geometry.faceVertexUvs[0][0][1].set(u0, v1);
-                quad.geometry.faceVertexUvs[0][0][2].set(u1, v0);
-                quad.geometry.faceVertexUvs[0][1][0].set(u0, v1);
-                quad.geometry.faceVertexUvs[0][1][1].set(u1, v1);
-                quad.geometry.faceVertexUvs[0][1][2].set(u1, v0);
-                quad.geometry.uvsNeedUpdate = true;
+                this.seraphimTextures[sti++] = u0;
+                this.seraphimTextures[sti++] = v0;
+                this.seraphimTextures[sti++] = u1;
+                this.seraphimTextures[sti++] = v0;
+                this.seraphimTextures[sti++] = u0;
+                this.seraphimTextures[sti++] = v1;
+                this.seraphimTextures[sti++] = u1;
+                this.seraphimTextures[sti++] = v1;
 
                 // Each seraphimVertices vector held the XY of two points in a quad
                 var offset = (k-2) * config.focus;
-                quad.geometry.vertices[0].x = sx + dxm - dys + offset;
-                quad.geometry.vertices[0].y = sy + dym + dxs + offset;
-                quad.geometry.vertices[1].x = sx + dxm + dys + offset;
-                quad.geometry.vertices[1].y = sy + dym - dxs + offset;
-                quad.geometry.vertices[2].x = oldscreenx - dxm - dyos + offset;
-                quad.geometry.vertices[2].y = oldscreeny - dym + dxos + offset;
-                quad.geometry.vertices[3].x = oldscreenx - dxm + dyos + offset;
-                quad.geometry.vertices[3].y = oldscreeny - dym - dxos + offset;
-                quad.geometry.verticesNeedUpdate = true;
-                si++;
+                this.seraphimVertices[svi++] = sx + dxm - dys + offset;
+                this.seraphimVertices[svi++] = sy + dym + dxs + offset;
+                this.seraphimVertices[svi++] = sx + dxm + dys + offset;
+                this.seraphimVertices[svi++] = sy + dym - dxs + offset;
+                this.seraphimVertices[svi++] = oldscreenx - dxm - dyos + offset;
+                this.seraphimVertices[svi++] = oldscreeny - dym + dxos + offset;
+                this.seraphimVertices[svi++] = oldscreenx - dxm + dyos + offset;
+                this.seraphimVertices[svi++] = oldscreeny - dym - dxos + offset;
+
+                this.seraphimIndicies[sii++] = svii;
+                this.seraphimIndicies[sii++] = svii + 2;
+                this.seraphimIndicies[sii++] = svii + 1;
+                this.seraphimIndicies[sii++] = svii + 2;
+                this.seraphimIndicies[sii++] = svii + 3;
+                this.seraphimIndicies[sii++] = svii + 1;
+
+                this.seraphimMesh.geometry.attributes.color.needsUpdate    = true;
+                this.seraphimMesh.geometry.attributes.uv.needsUpdate       = true;
+                this.seraphimMesh.geometry.attributes.position.needsUpdate = true;
+                this.seraphimMesh.geometry.attributes.index.needsUpdate    = true;
+
+                si++; svii += 4;
             }
         }
     };

@@ -57,7 +57,6 @@ Flurry.GLSaver.setup = function()
     var glSaver = Flurry.GLSaver,
         state   = glSaver.State;
 
-
     if (Flurry.GLSaver.timeCounter == 0)
         Flurry.GLSaver.timeCounter = Date.now();
 

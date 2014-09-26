@@ -68,6 +68,50 @@
     <canvas id="renderer"></canvas>
 </body>
 
+<shaders>
+    <script id="vertexShader" type="x-shader/x-vertex">
+        precision highp float;
+        precision highp int;
+
+        uniform mat4 modelViewMatrix;
+        uniform mat4 projectionMatrix;
+        uniform vec4 offsetRepeat;
+
+        attribute vec3 position;
+        attribute vec4 color;
+        attribute vec2 uv;
+
+        varying vec4 vColor;
+        varying vec2 vUv;
+
+        void main()
+        {
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+
+            vColor = color;
+            vUv    = uv * offsetRepeat.zw + offsetRepeat.xy;
+        }
+    </script>
+    <script id="fragShader" type="x-shader/x-fragment">
+        precision highp float;
+        precision highp int;
+
+        uniform sampler2D map;
+
+        varying vec4 vColor;
+        varying vec2 vUv;
+
+        void main()
+        {
+            //gl_FragColor = vColor;
+            gl_FragColor = texture2D(map, vUv) + vColor;
+
+            if (gl_FragColor.a < 0.5)
+                discard;
+        }
+    </script>
+</shaders>
+
 <scripts>
     <script src="//cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.1.0/gl-matrix-min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/three.js/r68/three.js"></script>

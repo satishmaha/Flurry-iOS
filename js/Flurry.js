@@ -112,10 +112,7 @@ Flurry.setupGui = function()
 
     cfgBlend.onChange(function(v)
     {
-        Flurry.GLSaver.State.smoke.particles.forEach(function(p)
-        {
-            p.blendMode(v);
-        });
+        Flurry.GLSaver.State.smoke.seraphimMesh.material.blending = Number(v);
     });
 };
 

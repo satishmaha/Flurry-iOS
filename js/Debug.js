@@ -26,7 +26,7 @@ Flurry.Debug = function()
         this.scene.add( new THREE.AmbientLight(0xFFFFFF) );
 
         // For generated texture debugging
-        this.texGeo = new THREE.PlaneGeometry( 256, 256 );
+        this.texGeo = new THREE.PlaneGeometry(256, 256);
         this.texMat = new THREE.MeshLambertMaterial({
             map: Flurry.Texture.ref, color: 0x000000, ambient: 0xFFFFFF,
             shading: THREE.FlatShading, transparent: true
@@ -35,17 +35,12 @@ Flurry.Debug = function()
         this.starMesh  = new THREE.Mesh( new THREE.PlaneGeometry(10, 10), new THREE.MeshBasicMaterial( { color: 0xff4422 } ) );
         this.smokeMesh = new THREE.Mesh( new THREE.PlaneGeometry(5, 30), new THREE.MeshBasicMaterial( { color: 0x44FF22 } ) );
 
-        this.scene.add(this.texMesh);
-        this.scene.add(this.starMesh);
-        this.scene.add(this.smokeMesh);
-
         this.texMesh.position.x = 128;
         this.texMesh.position.y = 128;
 
         this.bufferMesh = new THREE.Mesh(
-            new THREE.PlaneGeometry( 256, 256 ),
+            new THREE.PlaneGeometry(256, 256),
             new THREE.MeshLambertMaterial({
-                map: Flurry.buffer.target,
                 color: 0x000000, ambient: 0xFFFFFF,
                 shading: THREE.FlatShading, transparent: true
         }));
@@ -53,6 +48,9 @@ Flurry.Debug = function()
         this.bufferMesh.position.x = 256 + 128;
         this.bufferMesh.position.y = 128;
 
+        this.scene.add(this.texMesh);
+        this.scene.add(this.starMesh);
+        this.scene.add(this.smokeMesh);
         this.scene.add(this.bufferMesh);
     };
 
@@ -69,6 +67,8 @@ Flurry.Debug = function()
 
         this.smokeMesh.position.x = state.smoke.oldPos[0];
         this.smokeMesh.position.y = state.smoke.oldPos[1];
+
+        this.bufferMesh.material.map = Flurry.buffer.target;
     };
 
     this.render = function()
