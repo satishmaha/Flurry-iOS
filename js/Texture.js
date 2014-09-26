@@ -5,7 +5,7 @@ Flurry.Texture = {};
 
 /**
  * The THREE.JS texture used by Flurry
- * @type {DataTexture}
+ * @type {}
  */
 Flurry.Texture.ref = null;
 
@@ -167,14 +167,14 @@ Flurry.Texture.create = function()
         bigTexFlat[offset+1] = Flurry.Texture.bigTex[i][j][1];
     }
 
-    Flurry.Texture.ref = new THREE.DataTexture(
-        bigTexFlat, 256, 256,
-        THREE.LuminanceAlphaFormat, THREE.UnsignedByteType,
-        THREE.Texture.DEFAULT_MAPPING, THREE.RepeatWrapping, THREE.RepeatWrapping,
-        THREE.LinearFilter, THREE.LinearMipMapNearestFilter, 1
-    );
-
-    Flurry.Texture.ref.needsUpdate = true;
+//    Flurry.Texture.ref = new THREE.DataTexture(
+//        bigTexFlat, 256, 256,
+//        THREE.LuminanceAlphaFormat, THREE.UnsignedByteType,
+//        THREE.Texture.DEFAULT_MAPPING, THREE.RepeatWrapping, THREE.RepeatWrapping,
+//        THREE.LinearFilter, THREE.LinearMipMapNearestFilter, 1
+//    );
+//
+//    Flurry.Texture.ref.needsUpdate = true;
 
     // TODO: WebGL (TexEnvF shader?)
     // See http://graphics.snu.ac.kr/class/graphics2011/materials/ch14_glsl.pdf

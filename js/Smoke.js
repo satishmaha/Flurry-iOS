@@ -23,12 +23,6 @@ Flurry.Smoke = function()
     this.frame     = 0;
 
     /**
-     * The buffer geometry mesh that represents the entire Flurry
-     * @type {THREE.Mesh}
-     */
-    this.seraphimMesh = null;
-
-    /**
      * Buffer for the smoke mesh vertex positions. Big enough for each particle, times
      * four verticies, times two components (XY)
      * @type {Float32Array}
@@ -38,7 +32,7 @@ Flurry.Smoke = function()
     /**
      * Buffer for the smoke mesh vertex indicies. Each particle is made up of two
      * triangles, so six indices per particle.
-     * @type {Float32Array}
+     * @type {Uint16Array}
      */
     this.seraphimIndicies = new Uint16Array(MAX_SMOKE * 6);
 
@@ -70,22 +64,10 @@ Flurry.Smoke = function()
         for (var i = 0; i < 3; i++)
             this.oldPos[i] = Math.randFlt(-100, 100);
 
-        this.seraphimMesh = new THREE.Mesh(
-            new THREE.BufferGeometry(),
-            new THREE.RawShaderMaterial({
-                map : Flurry.Texture.ref,
-                vertexShader   : document.getElementById( 'vertexShader' ).textContent,
-                fragmentShader : document.getElementById( 'fragShader' ).textContent,
-                shading: THREE.FlatShading, transparent: true, blending: THREE.AdditiveBlending
-            })
-        );
-
-        this.seraphimMesh.geometry.addAttribute('position', new THREE.BufferAttribute(this.seraphimVertices, 2));
-        this.seraphimMesh.geometry.addAttribute('index',    new THREE.BufferAttribute(this.seraphimIndicies, 1));
-        this.seraphimMesh.geometry.addAttribute('uv',       new THREE.BufferAttribute(this.seraphimTextures, 2));
-        this.seraphimMesh.geometry.addAttribute('color',    new THREE.BufferAttribute(this.seraphimColors,   4));
-
-        Flurry.scene.add(this.seraphimMesh);
+        Flurry.renderer.setBuffer('position', this.seraphimVertices);
+        Flurry.renderer.setBuffer('index',    this.seraphimIndicies);
+        Flurry.renderer.setBuffer('color',    this.seraphimColors);
+        Flurry.renderer.setBuffer('uv',       this.seraphimTextures);
     };
 
     this.update = function()
@@ -226,8 +208,8 @@ Flurry.Smoke = function()
             si   = 0,
             state       = Flurry.GLSaver.State,
             config      = Flurry.Config,
-            screenW     = Flurry.renderer.domElement.clientWidth,
-            screenH     = Flurry.renderer.domElement.clientHeight,
+            screenW     = Flurry.renderer.canvas.clientWidth,
+            screenH     = Flurry.renderer.canvas.clientHeight,
             screenRatio = screenW / screenH,
             wslash2     = screenW * 0.5,
             hslash2     = screenH * 0.5,
@@ -333,11 +315,6 @@ Flurry.Smoke = function()
                 this.seraphimIndicies[sii++] = svii + 2;
                 this.seraphimIndicies[sii++] = svii + 3;
                 this.seraphimIndicies[sii++] = svii + 1;
-
-                this.seraphimMesh.geometry.attributes.color.needsUpdate    = true;
-                this.seraphimMesh.geometry.attributes.uv.needsUpdate       = true;
-                this.seraphimMesh.geometry.attributes.position.needsUpdate = true;
-                this.seraphimMesh.geometry.attributes.index.needsUpdate    = true;
 
                 si++; svii += 4;
             }
