@@ -52,6 +52,9 @@ Flurry.setupGui = function()
     Flurry.stats.domElement.style.top      = '0px';
     document.body.appendChild(Flurry.stats.domElement);
 
+    Flurry.gui.hidden = false;
+    Flurry.renderer.canvas.onclick = Flurry.toggleGui;
+
     var gui    = Flurry.gui,
         config = Flurry.Config;
 
@@ -95,4 +98,11 @@ Flurry.setupGui = function()
 
         Flurry.stats.domElement.style.display = v ? "block" : "none";
     });
+};
+
+Flurry.toggleGui = function()
+{
+    'use strict';
+    Flurry.gui.domElement.style.display = Flurry.gui.hidden ? 'block' : 'none';
+    Flurry.gui.hidden = !Flurry.gui.hidden;
 };
