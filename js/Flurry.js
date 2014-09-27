@@ -11,14 +11,8 @@ var MAX_SMOKE   = 1800, // Originally 3600
  */
 var Flurry = {};
 
-/** @type {THREE.Scene} */
-Flurry.scene = null;
-/** @type {THREE.Camera} */
-Flurry.camera = null;
-/** @type {THREE.WebGLRenderer} */
+/** @type {Flurry.Renderer} */
 Flurry.renderer = null;
-/** @type {Flurry.Buffer} */
-Flurry.buffer = null;
 /** @type {Stats} */
 Flurry.stats = null;
 /** @type {dat.GUI} */
@@ -27,23 +21,15 @@ Flurry.gui = null;
 /**
  * Entry point for Flurry
  */
-Flurry.main = function(canvas)
+Flurry.main = function()
 {
     'use strict';
-    console.log("[Main] Setting up a THREE.js scene and DOM...");
-    Flurry.renderer = new THREE.WebGLRenderer({
-        antialias: false, canvas: document.getElementById(canvas)
-    });
-    Flurry.scene  = new THREE.Scene();
-    Flurry.camera = new THREE.OrthographicCamera();
-    Flurry.buffer = new Flurry.Buffer();
-    Flurry.renderer.setFaceCulling(THREE.CullFaceNone);
-    Flurry.renderer.setDepthTest(false);
-    Flurry.renderer.setDepthWrite(false);
-    Flurry.renderer.autoClear = false;
-    Flurry.onResize();
-    window.addEventListener('resize', Flurry.onResize, false);
-    document.body.appendChild(Flurry.renderer.domElement);
+    console.log("[Main] Setting up renderer...");
+    Flurry.renderer = new Flurry.Renderer('renderer');
+    Flurry.renderer.useShader('vertexShader');
+    Flurry.renderer.useShader('fragShader');
+    Flurry.renderer.setup();
+    window.addEventListener('resize', function() { Flurry.renderer.resize(); }, false);
 
     console.log("[Main] Setting up UI...");
     Flurry.setupGui();
@@ -53,6 +39,17 @@ Flurry.main = function(canvas)
 
     console.log("[Main] Done! Beginning render loop...");
     Flurry.GLSaver.render();
+
+    Flurry.renderer.canvas.width  = 0;
+    Flurry.renderer.canvas.height = 0;
+    Flurry.renderer.resize();
+
+    // Fix for Firefox issue with preserveDrawingBuffer
+    window.setTimeout(function(){
+        Flurry.renderer.canvas.width  = 0;
+        Flurry.renderer.canvas.height = 0;
+        Flurry.renderer.resize();
+    }, 100);
 };
 
 Flurry.setupGui = function()
@@ -66,6 +63,9 @@ Flurry.setupGui = function()
     Flurry.stats.domElement.style.top      = '0px';
     document.body.appendChild(Flurry.stats.domElement);
 
+    Flurry.gui.hidden = false;
+    Flurry.renderer.canvas.onclick = Flurry.toggleGui;
+
     var gui    = Flurry.gui,
         config = Flurry.Config;
 
@@ -77,14 +77,15 @@ Flurry.setupGui = function()
 
     var f0 = gui.addFolder('Color');
     f0.addColor(config, 'backColor')
-        .onChange(function(v)  { Flurry.buffer.dimMesh.material.color.setStyle(v); });
-    var cfgBlend = f0.add(config, 'blendMode', BlendModes);
+        .onChange(function(v)  { Flurry.renderer.setFadeColor( ColorC(v) ); });
+    f0.add(config, 'blendMode', BlendModes)
+        .onChange(function(v)  { Flurry.renderer.setBlendMode( Number(v) ); });
+    f0.add(config, 'brightness', 0, 5);
+    f0.add(config, 'colorIncoherence', 0, 3);
     f0.add(config, 'colorMode', ColorModes)
         .onChange(function(v) { Flurry.Config.colorMode = Number(v); });
     f0.add(config, 'fade', 0, 0.5)
-        .onChange(function(v)  { Flurry.buffer.dimMesh.material.opacity = v; });
-    f0.add(config, 'brightness', 0, 5);
-    f0.add(config, 'colorIncoherence', 0, 3);
+        .onChange(function(v)  { Flurry.renderer.setFade(v); });
 
     var f1 = gui.addFolder('Field');
     f1.add(config, 'fieldCoherence', 0, 10);
@@ -99,7 +100,6 @@ Flurry.setupGui = function()
     f2.add(config, 'streamSpeed', 0, 100);
 
     var f3 = gui.addFolder('Debug');
-    f3.add(config, 'debug');
     f3.add(config, 'debugFps').onChange( function(v)
     {
         if (v)
@@ -109,32 +109,11 @@ Flurry.setupGui = function()
 
         Flurry.stats.domElement.style.display = v ? "block" : "none";
     });
-
-    cfgBlend.onChange(function(v)
-    {
-        Flurry.GLSaver.State.smoke.particles.forEach(function(p)
-        {
-            p.blendMode(v);
-        });
-    });
 };
 
-Flurry.onResize = function()
+Flurry.toggleGui = function()
 {
     'use strict';
-    console.log("[Main] Resizing renderer...");
-
-    Flurry.camera.left   = 0;
-    Flurry.camera.right  = window.innerWidth;
-    Flurry.camera.bottom = 0;
-    Flurry.camera.top    = window.innerHeight;
-    Flurry.camera.near   = -1;
-    Flurry.camera.far    = 1;
-    Flurry.camera.aspect = window.innerWidth / window.innerHeight;
-
-    Flurry.renderer.setSize(window.innerWidth, window.innerHeight);
-    Flurry.camera.updateProjectionMatrix();
-    Flurry.renderer.clearTarget(Flurry.buffer.target, true, true, true);
-
-    Flurry.buffer.needsUpdate = true;
+    Flurry.gui.domElement.style.display = Flurry.gui.hidden ? 'block' : 'none';
+    Flurry.gui.hidden = !Flurry.gui.hidden;
 };

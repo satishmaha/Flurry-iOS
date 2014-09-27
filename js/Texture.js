@@ -4,8 +4,8 @@
 Flurry.Texture = {};
 
 /**
- * The THREE.JS texture used by Flurry
- * @type {DataTexture}
+ * The WebGL texture used by Flurry
+ * @type {WebGLTexture}
  */
 Flurry.Texture.ref = null;
 
@@ -146,6 +146,9 @@ Flurry.Texture.create = function()
 {
     'use strict';
 
+    var gl   = Flurry.renderer.gl,
+        GLES = WebGLRenderingContext;
+
     for (var i = 0; i < 8; i++)
     for (var j = 0; j < 8; j++)
     {
@@ -167,14 +170,17 @@ Flurry.Texture.create = function()
         bigTexFlat[offset+1] = Flurry.Texture.bigTex[i][j][1];
     }
 
-    Flurry.Texture.ref = new THREE.DataTexture(
-        bigTexFlat, 256, 256,
-        THREE.LuminanceAlphaFormat, THREE.UnsignedByteType,
-        THREE.Texture.DEFAULT_MAPPING, THREE.RepeatWrapping, THREE.RepeatWrapping,
-        THREE.LinearFilter, THREE.LinearMipMapNearestFilter, 1
-    );
+    Flurry.Texture.ref = gl.createTexture();
 
-    Flurry.Texture.ref.needsUpdate = true;
+    gl.bindTexture(GLES.TEXTURE_2D, Flurry.Texture.ref);
+    gl.texImage2D(
+        GLES.TEXTURE_2D, 0,
+        GLES.LUMINANCE_ALPHA, 256, 256, 0,
+        GLES.LUMINANCE_ALPHA,
+        GLES.UNSIGNED_BYTE, bigTexFlat);
+    gl.texParameteri(GLES.TEXTURE_2D, GLES.TEXTURE_MAG_FILTER, GLES.LINEAR);
+    gl.texParameteri(GLES.TEXTURE_2D, GLES.TEXTURE_MIN_FILTER, GLES.LINEAR_MIPMAP_NEAREST);
+    gl.generateMipmap(GLES.TEXTURE_2D);
 
     // TODO: WebGL (TexEnvF shader?)
     // See http://graphics.snu.ac.kr/class/graphics2011/materials/ch14_glsl.pdf

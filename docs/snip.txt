@@ -64,3 +64,67 @@ sPartMesh.geometry.faces[1].vertexColors[2].b = state.smoke.seraphimColors[idx][
 // FACE A: 0, 2, 1 (or: top left, bottom left, top right)
 // FACE B: 2, 3, 1 (or: bottom left, bottom right, top right)
 
+// 0: Top Left
+// 1: Top Right
+// 2: Bottom Left
+// 3: Bottom Right
+
+
+this.seraphimTextures[sti++] = u0;
+this.seraphimTextures[sti++] = v0;
+
+this.seraphimTextures[sti++] = u0;
+this.seraphimTextures[sti++] = v1;
+
+this.seraphimTextures[sti++] = u1;
+this.seraphimTextures[sti++] = v0;
+
+this.seraphimTextures[sti++] = u0;
+this.seraphimTextures[sti++] = v1;
+
+this.seraphimTextures[sti++] = u1;
+this.seraphimTextures[sti++] = v1;
+
+this.seraphimTextures[sti++] = u1;
+this.seraphimTextures[sti++] = v0;
+
+
+
+this.clearQuadBuffer = function()
+    {
+        for (var ci = 0; ci < 4; ci++)
+        {
+            this.seraphimColors[this.sci++] = 0;
+            this.seraphimColors[this.sci++] = 0;
+            this.seraphimColors[this.sci++] = 1;
+            this.seraphimColors[this.sci++] = 1;
+        }
+
+        this.seraphimTextures[this.sti++] = 0;
+        this.seraphimTextures[this.sti++] = 0;
+        this.seraphimTextures[this.sti++] = 1;
+        this.seraphimTextures[this.sti++] = 0;
+        this.seraphimTextures[this.sti++] = 0;
+        this.seraphimTextures[this.sti++] = 1;
+        this.seraphimTextures[this.sti++] = 1;
+        this.seraphimTextures[this.sti++] = 1;
+
+        // Each seraphimVertices vector held the XY of two points in a quad
+        this.seraphimVertices[this.svi++] = 0;
+        this.seraphimVertices[this.svi++] = 100;
+        this.seraphimVertices[this.svi++] = 100;
+        this.seraphimVertices[this.svi++] = 100;
+        this.seraphimVertices[this.svi++] = 100;
+        this.seraphimVertices[this.svi++] = 0;
+        this.seraphimVertices[this.svi++] = 0;
+        this.seraphimVertices[this.svi++] = 0;
+
+        this.seraphimIndicies[this.sii++] = 0;
+        this.seraphimIndicies[this.sii++] = 0;
+        this.seraphimIndicies[this.sii++] = 0;
+        this.seraphimIndicies[this.sii++] = 0;
+        this.seraphimIndicies[this.sii++] = 0;
+        this.seraphimIndicies[this.sii++] = 0;
+
+        this.si++; this.svii += 4;
+    };

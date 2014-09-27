@@ -6,9 +6,8 @@
  * @readonly
  */
 var BlendModes = {
-    None     : THREE.NoBlending,
-    Additive : THREE.AdditiveBlending,
-    Multiply : THREE.MultiplyBlending,
-    Normal   : THREE.NormalBlending,
-    Subtract : THREE.SubtractiveBlending
+    Normal   : 1,
+    Additive : 2,
+    Subtract : 3,
+    Multiply : 4
 };

@@ -2,7 +2,7 @@
 // Based off original code from https://github.com/calumr/flurry
 
 /**
- * A group of particles, represented by four THREE.js quads
+ * A group of particles
  * @constructor
  * */
 Flurry.SmokeParticle = function()
@@ -35,34 +35,4 @@ Flurry.SmokeParticle = function()
     this.frame = Vector4I();
     /** @type {Float32Array} */
     this.time  = Vector4F();
-    /** @type {THREE.Mesh[]} */
-    this.quads = new Array(4);
-
-    this.init = function()
-    {
-        for (var i = 0; i < 4; i++)
-        {
-            var material = new THREE.MeshLambertMaterial({
-                map: Flurry.Texture.ref, vertexColors: THREE.FaceColors,
-                shading: THREE.FlatShading, transparent: true, blending: THREE.AdditiveBlending
-            });
-
-            material.depthTest   = false;
-            material.depthWrite  = false;
-            material.needsUpdate = true;
-            material.opacity     = 0.0;
-            material.alphaTest   = 0;
-
-            var mesh = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), material);
-            this.quads[i] = mesh;
-            Flurry.scene.add(mesh);
-        }
-    };
-
-    this.blendMode = function(mode)
-    {
-        for (var i = 0; i < 4; i++)
-            this.quads[i].material.blending = Number(mode);
-    };
-
 };
