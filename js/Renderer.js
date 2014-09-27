@@ -12,6 +12,12 @@ Flurry.Renderer = function(canvasId)
 {
     'use strict';
 
+    var contextParams = {
+        preserveDrawingBuffer: true,
+        depth: false, stencil: false,
+        antialias: false
+    };
+
     /**
      * Reference to the output canvas element
      * @type {HTMLCanvasElement}
@@ -22,11 +28,8 @@ Flurry.Renderer = function(canvasId)
      * Core WebGL rendering context and methods
      * @type {WebGLRenderingContext}
      */
-    this.gl = this.canvas.getContext('webgl', {
-        preserveDrawingBuffer: true,
-        depth: false, stencil: false,
-        antialias: false
-    });
+    this.gl = this.canvas.getContext('webgl', contextParams)
+        || this.canvas.getContext('experimental-webgl', contextParams);
 
     /**
      * All shaders used by the renderer
