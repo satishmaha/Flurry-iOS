@@ -6,9 +6,8 @@
  * @readonly
  */
 var BlendModes = {
-    None     : 0,
-    Additive : 1,
-    Multiply : 2,
-    Normal   : 3,
-    Subtract : 4
+    Normal   : 1,
+    Additive : 2,
+    Subtract : 3,
+    Multiply : 4
 };

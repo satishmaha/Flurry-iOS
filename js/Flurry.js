@@ -64,13 +64,14 @@ Flurry.setupGui = function()
     var f0 = gui.addFolder('Color');
     f0.addColor(config, 'backColor')
         .onChange(function(v)  { Flurry.renderer.setFadeColor( ColorC(v) ); });
-    var cfgBlend = f0.add(config, 'blendMode', BlendModes);
+    f0.add(config, 'blendMode', BlendModes)
+        .onChange(function(v)  { Flurry.renderer.setBlendMode( Number(v) ); });
+    f0.add(config, 'brightness', 0, 5);
+    f0.add(config, 'colorIncoherence', 0, 3);
     f0.add(config, 'colorMode', ColorModes)
         .onChange(function(v) { Flurry.Config.colorMode = Number(v); });
     f0.add(config, 'fade', 0, 0.5)
         .onChange(function(v)  { Flurry.renderer.setFade(v); });
-    f0.add(config, 'brightness', 0, 5);
-    f0.add(config, 'colorIncoherence', 0, 3);
 
     var f1 = gui.addFolder('Field');
     f1.add(config, 'fieldCoherence', 0, 10);
@@ -93,10 +94,5 @@ Flurry.setupGui = function()
             Flurry.stats.end();
 
         Flurry.stats.domElement.style.display = v ? "block" : "none";
-    });
-
-    cfgBlend.onChange(function(v)
-    {
-
     });
 };

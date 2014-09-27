@@ -73,7 +73,7 @@
         precision highp float;
         precision highp int;
 
-        attribute vec3 position;
+        attribute vec2 position;
         attribute vec4 color;
         attribute vec2 uv;
 
@@ -85,7 +85,7 @@
 
         void main()
         {
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 0, 1.0);
 
             vColor = color;
             vUv    = uv;
@@ -110,7 +110,9 @@
             {
                 vec4 texel = texture2D(uSampler, vec2(vUv.s, vUv.t));
 
-                gl_FragColor = vec4(texel) *  vColor;
+                gl_FragColor = vec4(texel) * vColor;
+                if (gl_FragColor.a < 0.0)
+                    discard;
             }
         }
     </script>

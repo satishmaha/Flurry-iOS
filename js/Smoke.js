@@ -27,7 +27,8 @@ Flurry.Smoke = function()
      * four verticies, times two components (XY)
      * @type {Float32Array}
      */
-    this.seraphimVertices = new Float32Array(MAX_SMOKE * 4 * 2);
+    this.seraphimVertices      = new Float32Array(MAX_SMOKE * 4 * 2);
+    this.seraphimVerticesBlank = new Float32Array(MAX_SMOKE * 4 * 2);
 
     /**
      * Buffer for the smoke mesh vertex indicies. Each particle is made up of two
@@ -110,7 +111,7 @@ Flurry.Smoke = function()
                     dZ  = this.particles[this.nextParticle].pos[2][this.nextSubParticle] - state.spark[i].pos[2],
                     rsq = (dX*dX+dY*dY+dZ*dZ),
                     f   = config.streamSpeed * 10 * streamSpeedCoherenceFactor,
-                    mag = f / Math.sqrt(rsq);
+                    mag = Math.frsqrte(rsq) * f;
 
                 this.particles[this.nextParticle].deltaPos[0][this.nextSubParticle] -= (dX * mag);
                 this.particles[this.nextParticle].deltaPos[1][this.nextSubParticle] -= (dY * mag);
@@ -215,6 +216,8 @@ Flurry.Smoke = function()
             hslash2     = screenH * 0.5,
             streamSize  = config.streamSize * 1000,
             width       = (streamSize + 2.5 * config.streamExpansion) * screenRatio;
+
+        this.seraphimVertices.set(this.seraphimVerticesBlank);
 
         // Per particle (group of four quads)
         for (var i = 0; i < MAX_SMOKE / 4; i++)
