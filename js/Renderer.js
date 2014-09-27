@@ -25,7 +25,7 @@ Flurry.Renderer = function(canvasId)
     this.gl = this.canvas.getContext('webgl', {
         preserveDrawingBuffer: true,
         depth: false, stencil: false,
-        antialias: false, alpha: false
+        antialias: false
     });
 
     /**
@@ -165,7 +165,7 @@ Flurry.Renderer.prototype.useShader = function(id)
     var gl           = this.gl,
         GLES         = WebGLRenderingContext,
         shaderScript = document.getElementById(id),
-        shaderText   = shaderScript.innerText,
+        shaderText   = shaderScript.innerHTML,
         shader;
 
     if (shaderScript.type == "x-shader/x-fragment")

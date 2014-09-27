@@ -39,6 +39,17 @@ Flurry.main = function()
 
     console.log("[Main] Done! Beginning render loop...");
     Flurry.GLSaver.render();
+
+    Flurry.renderer.canvas.width  = 0;
+    Flurry.renderer.canvas.height = 0;
+    Flurry.renderer.resize();
+
+    // Fix for Firefox issue with preserveDrawingBuffer
+    window.setTimeout(function(){
+        Flurry.renderer.canvas.width  = 0;
+        Flurry.renderer.canvas.height = 0;
+        Flurry.renderer.resize();
+    }, 100);
 };
 
 Flurry.setupGui = function()
