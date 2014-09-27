@@ -70,15 +70,18 @@
 
 <shaders>
     <script id="vertexShader" type="x-shader/x-vertex">
-        uniform mat4 modelViewMatrix;
-        uniform mat4 projectionMatrix;
+        precision highp float;
+        precision highp int;
 
         attribute vec3 position;
         attribute vec4 color;
         attribute vec2 uv;
 
-        varying lowp vec4 vColor;
-        varying lowp vec2 vUv;
+        uniform mat4 modelViewMatrix;
+        uniform mat4 projectionMatrix;
+
+        varying vec4 vColor;
+        varying vec2 vUv;
 
         void main()
         {
@@ -89,12 +92,26 @@
         }
     </script>
     <script id="fragShader" type="x-shader/x-fragment">
-        varying lowp vec4 vColor;
-        varying lowp vec2 vUv;
+        precision highp float;
+        precision highp int;
+
+        varying vec4 vColor;
+        varying vec2 vUv;
+
+        uniform bool drawingRect;
+
+        uniform sampler2D uSampler;
 
         void main()
         {
-            gl_FragColor = vColor;
+            if (drawingRect)
+                gl_FragColor = vColor;
+            else
+            {
+                vec4 texel = texture2D(uSampler, vec2(vUv.s, vUv.t));
+
+                gl_FragColor = vec4(texel) *  vColor;
+            }
         }
     </script>
 </shaders>
@@ -113,6 +130,7 @@
     <script src="js/data/Presets.js"></script>
 
     <script src="js/util/ArrayOf.js"></script>
+    <script src="js/util/Colors.js"></script>
     <script src="js/util/Math.js"></script>
     <script src="js/util/Vectors.js"></script>
 

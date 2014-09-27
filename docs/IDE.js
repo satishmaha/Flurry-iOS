@@ -12,3 +12,13 @@ var WebGLShader = {};
  * Represents a shader program used by WebGL
  */
 var WebGLProgram = {};
+
+/**
+ * Represents a texture used by WebGL
+ */
+var WebGLTexture = {};
+
+/**
+ * Represents an index location of a shader program's uniform
+ */
+var WebGLUniformLocation = {};

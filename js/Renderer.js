@@ -25,7 +25,7 @@ Flurry.Renderer = function(canvasId)
     this.gl = this.canvas.getContext('webgl', {
         preserveDrawingBuffer: true,
         depth: false, stencil: false,
-        antialias: false, alpha: true//, premultipliedAlpha: false
+        antialias: false, alpha: false
     });
 
     /**
@@ -48,7 +48,12 @@ Flurry.Renderer = function(canvasId)
      */
     this.uniforms = {
         projMatrix      : {id : 0, matrix: new Float32Array(16)},
-        modelViewMatrix : {id : 0, matrix: new Float32Array(16)}
+        modelViewMatrix : {id : 0, matrix: new Float32Array(16)},
+        drawingRect     : {
+            /** @type {WebGLUniformLocation} */
+            id : 0,
+            value: false
+        }
     };
 
     /**
@@ -63,7 +68,7 @@ Flurry.Renderer = function(canvasId)
 
     this.rect = {
         position : new Float32Array(8),
-        color    : new Float32Array([0,0,0,0.1,0,0,0,0.1,0,0,0,0.1,0,0,0,0.1])
+        color    : new Float32Array(16)
     };
 
     if (!this.gl)
@@ -94,6 +99,7 @@ Flurry.Renderer.prototype.setup = function()
 
     this.uniforms.projMatrix.id      = gl.getUniformLocation(program, 'projectionMatrix');
     this.uniforms.modelViewMatrix.id = gl.getUniformLocation(program, 'modelViewMatrix');
+    this.uniforms.drawingRect.id     = gl.getUniformLocation(program, 'drawingRect');
     this.attributes.position = gl.getAttribLocation(program, "position");
     this.attributes.color    = gl.getAttribLocation(program, "color");
     this.attributes.uv       = gl.getAttribLocation(program, "uv");
@@ -102,6 +108,7 @@ Flurry.Renderer.prototype.setup = function()
     gl.enableVertexAttribArray(this.attributes.color);
     gl.enableVertexAttribArray(this.attributes.uv);
     this.resize();
+    this.setFade(0.1);
 };
 
 Flurry.Renderer.prototype.render = function()
@@ -111,6 +118,8 @@ Flurry.Renderer.prototype.render = function()
         GLES = WebGLRenderingContext;
 
     // Fade rect
+    gl.uniform1i(this.uniforms.drawingRect.id, 1);
+    gl.bindTexture(GLES.TEXTURE_2D, null);
     gl.blendFunc(GLES.SRC_ALPHA, GLES.ONE_MINUS_SRC_ALPHA);
     gl.bindBuffer(GLES.ARRAY_BUFFER, this.buffers.position.buffer);
     gl.bufferData(GLES.ARRAY_BUFFER, this.rect.position, GLES.STATIC_DRAW);
@@ -121,8 +130,12 @@ Flurry.Renderer.prototype.render = function()
     gl.vertexAttribPointer(this.attributes.color, 4, GLES.FLOAT, false, 0, 0)
     gl.drawArrays(GLES.TRIANGLE_STRIP, 0, 4);
 
+    //gl.clear(GLES.COLOR_BUFFER_BIT);
     // Flurry
-    gl.blendFunc(GLES.ONE, GLES.ONE);
+    gl.uniform1i(this.uniforms.drawingRect.id, 0);
+    gl.bindTexture(GLES.TEXTURE_2D, Flurry.Texture.ref);
+    gl.blendEquation(GLES.FUNC_ADD);
+    gl.blendFunc(GLES.SRC_ALPHA, GLES.ONE);
     gl.bindBuffer(GLES.ARRAY_BUFFER, this.buffers.position.buffer);
     gl.bufferData(GLES.ARRAY_BUFFER, this.buffers.position.data, GLES.DYNAMIC_DRAW);
     gl.vertexAttribPointer(this.attributes.position, 2, GLES.FLOAT, false, 0, 0);
@@ -172,6 +185,24 @@ Flurry.Renderer.prototype.setBuffer = function(type, data)
 
     this.buffers[type].buffer = gl.createBuffer();
     this.buffers[type].data   = data;
+};
+
+Flurry.Renderer.prototype.setFade = function(alpha)
+{
+    'use strict';
+    for (var i = 0; i < 4; i++)
+        this.rect.color[i*4 + 3] = alpha;
+};
+
+Flurry.Renderer.prototype.setFadeColor = function(color)
+{
+    'use strict';
+    for (var i = 0; i < 4; i++)
+    {
+        this.rect.color[i*4]   = color[0];
+        this.rect.color[i*4+1] = color[1];
+        this.rect.color[i*4+2] = color[2];
+    }
 };
 
 Flurry.Renderer.prototype.resize = function()

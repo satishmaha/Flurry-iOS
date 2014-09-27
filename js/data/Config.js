@@ -2,7 +2,7 @@
  * Collection of default presets for use by Flurry
  */
 Flurry.Config = {
-    backColor        : 0x000000,
+    backColor        : 0,
     blendMode        : BlendModes.Additive,
     brightness       : 1,
     colorIncoherence : 0.15,
