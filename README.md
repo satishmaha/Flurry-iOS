@@ -4,7 +4,7 @@ This was my first excercise in OpenGL, WebGL, Three.JS, reading Obj-/C/++ code, 
 
 ## Demo
  
-Demo can be found on [this page](http://roycurtis.github.io/flurry/). Press H to hide the settings GUI and press F11 for full-screen.
+Demo can be found on [this page](http://roycurtis.github.io/Flurry-WebGL/). Press H to hide the settings GUI and press F11 for full-screen.
 
 ## Structure
 
