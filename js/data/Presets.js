@@ -71,26 +71,26 @@ Flurry.Presets = {
             "streamSpeed": 45
         }
     },
-    "MacOS X": {
+    "Skittle Spray": {
         "0": {
             "focus": 0,
-            "gravity": 338,
+            "gravity": 150,
             "incohesion": 0.07,
             "seraphDistance": 200,
             "backColor": 0,
-            "blendMode": 2,
+            "blendMode": "1",
+            "brightness": 5,
+            "colorIncoherence": 3,
             "colorMode": 9,
-            "fade": 0.1,
-            "brightness": 1,
-            "colorIncoherence": 0.15,
+            "fade": 0,
             "fieldCoherence": 0,
-            "fieldSpeed": 29.77770118904015,
+            "fieldSpeed": 20,
             "fieldRange": 100,
-            "numStreams": 8,
-            "streamBias": 7,
-            "streamExpansion": 100,
-            "streamSize": 26,
-            "streamSpeed": 45
+            "numStreams": 32,
+            "streamBias": 18,
+            "streamExpansion": 250,
+            "streamSize": 30,
+            "streamSpeed": 100
         }
     },
     "Treasure": {
