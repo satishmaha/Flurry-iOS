@@ -137,8 +137,8 @@ Flurry.Renderer.prototype.render = function()
 
     gl.bindBuffer(GLES.ARRAY_BUFFER, this.buffers.color.buffer);
     gl.bufferData(GLES.ARRAY_BUFFER, this.rect.color, GLES.STATIC_DRAW);
-    gl.vertexAttribPointer(this.attributes.color, 4, GLES.FLOAT, false, 0, 0)
-    gl.drawArrays(GLES.TRIANGLE_STRIP, 0, 4);
+    gl.vertexAttribPointer(this.attributes.color, 4, GLES.FLOAT, false, 0, 0);
+    gl.drawArrays(GLES.TRIANGLE_STRIP, 0, 4); // Causes a warning on first call due to unbound UV data
 
     // Flurry
     gl.blendEquation(this.blend.func);

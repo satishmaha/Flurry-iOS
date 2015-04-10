@@ -89,7 +89,7 @@ Flurry.GLSaver.setup = function()
 Flurry.GLSaver.render = function()
 {
     'use strict';
-    window.requestAnimationFrame(Flurry.GLSaver.render, null);
+    window.requestAnimationFrame(Flurry.GLSaver.render);
 
     var state  = Flurry.GLSaver.State,
         config = Flurry.Config;
