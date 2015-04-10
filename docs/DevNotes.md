@@ -1,3 +1,41 @@
+## Note 9
+
+**This note is late; 7 months prior to this commit, I completed Flurry-WebGL and made major changes since.**
+
+I was very proud to reach my goal of making Flurry work on WebGL. It is the first time
+I had successfully ported a C code base and understood WebGL on the inside. Since then,
+I worked towards polishing Flurry-WebGL to make the most of its new web environment.
+
+---
+
+I added a GUI with dat-gui that allowed me to expose all internal state variables.
+This allowed the Flurry to be dynamically changed, and it dramatically helped me
+understand how each moving part of Flurry's algorithm contributed to the visuals.
+
+I also made use of the GUI to create some presets, to more properly show off the potential
+and power of Flurry.
+
+---
+
+Another major change was the transition back to raw WebGL from Three.js. Three.js is
+great for prototyping or quickly writing a working example, but I still felt the code
+could benefit from much less abstraction.
+
+I was also unhappy with the "black box" nature of Three.js' code (whilst available in
+source code form, it was still too difficult for me to follow what whappened in the code).
+
+By reimplementing what I now knew to be working code in Javascript, into WebGL, I was able
+to optimize Flurry up to threefold and gain a better understanding of how WebGL worked. This
+low level approached helped me fix strange bugs, such as quads lingering on the edges and
+brightness issues with extreme resolutions.
+
+---
+
+The next thing for Flurry-WebGL is to restructure the code; to make it cleaner, more documented
+and easy for other users to understand and study the code. There is also [SIMD.js](https://blog.mozilla.org/javascript/2015/03/10/state-of-simd-js-performance-in-firefox/) support on the
+way, which the original Flurry code relied heavily upon. I would like to eventually implement
+SIMD support into Flurry-WebGL.
+
 ## Note 8
 
 I think I may have made a wrong assumption about the Smoke draw loop; that it was
