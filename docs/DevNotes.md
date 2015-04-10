@@ -1,3 +1,17 @@
+## Note 10
+
+I will try to implement the AltiVec/Vector "engine" of Flurry again by using SIMD.js. As of writing,
+it is only available in Firefox Nightly. I will be comparing the performance differences; currently,
+Flurry runs on Nightly 40.0a1 2015-04-09 with 16ms per tick.
+
+Reference material:
+
+* [SIMD.js polyfill](https://github.com/johnmccutchan/ecmascript_simd) - I will be using this as it
+provides classes for 4x vector values (eg. float32x4) and can use feature detection to automatically
+switch to native SIMD, when present.
+* https://hacks.mozilla.org/2014/10/introducing-simd-js/
+* http://peterjensen.github.io/idf2014-simd/
+
 ## Note 9
 
 **This note is late; 7 months prior to this commit, I completed Flurry-WebGL and made major changes since.**

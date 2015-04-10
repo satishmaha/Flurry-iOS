@@ -24,7 +24,8 @@ Flurry.Presets = {
             "streamBias": 7,
             "streamExpansion": 100,
             "streamSize": 25,
-            "streamSpeed": 45
+            "streamSpeed": 45,
+            "debugFps": true
         }
     },
     "Nevada": {
@@ -222,9 +223,7 @@ Flurry.Presets = {
             "streamBias": 25.366189901774945,
             "streamExpansion": 250,
             "streamSize": 3.3086334654489056,
-            "streamSpeed": 100,
-            "debug": false,
-            "debugFps": false
+            "streamSpeed": 100
         }
     }
 },
