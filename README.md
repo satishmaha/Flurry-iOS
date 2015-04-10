@@ -1,10 +1,14 @@
-This is a WebGL/Javascript port of Flurry from the original code by @calumr ( [website](https://web.archive.org/web/20100612005656/http://web.mac.com/calumr/iWeb/Calum%20Robinson/Flurry.html) ).
+This is a WebGL/Javascript port of Flurry from the original code by [Calum Robinson](https://github.com/calumr) ( [website](https://web.archive.org/web/20100612005656/http://web.mac.com/calumr/iWeb/Calum%20Robinson/Flurry.html) ).
 
 This was my first excercise in OpenGL, WebGL, Three.JS, reading Obj-/C/++ code, reading AltiVec code and porting a legacy app, all at once. As such, this port is unoptimal, buggy and may not be a 1:1 perfect implementation of flurry. But it works!
 
 ## Demo
  
 Demo can be found on [this page](http://roycurtis.github.io/Flurry-WebGL/). Press H to hide the settings GUI and press F11 for full-screen.
+
+## License
+
+Flurry-WebGL is licensed under the MIT license. See `LICENSE.md` for full notice.
 
 ## Structure
 
@@ -33,7 +37,4 @@ See `docs/DevNotes.md` for rough notes jotted down during the porting process.
 
 * Restructure and clean up the code
 * Multiple/per-monitor flurry?
-* Better support for mobile
-* ~~Optimize - Original Flurry just uses large arrays for vertex information. The same could be done with WebGL, but it was easier to just use THREE.js panels. Would need to adapt the code to generate vertex arrays for triangles, not quads.~~
-* ~~Presets~~
-* ~~Perfect the visuals - Something is off with how the particles are drawn (premultiplied alpha? gamma correction? color depth?). The Apple version is also much more colorful/bloomy.~~
+* Better support for mobile (alternative GUI to dat.gui?)
