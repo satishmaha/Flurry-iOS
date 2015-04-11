@@ -14,7 +14,6 @@ Flurry.GLSaver = {};
  */
 Flurry.GLSaver.timeCounter = 0;
 
-
 Flurry.GLSaver.State = {};
 /** @type {Flurry.Spark[]} */
 Flurry.GLSaver.State.spark     = ArrayOf(Flurry.Spark, 32);
@@ -64,10 +63,7 @@ Flurry.GLSaver.setup = function()
     state.star.init();
 
     for (var i = 0; i < 32; i++)
-        state.spark[i].init();
-
-    for (i = 0; i < 32; i++)
-        state.spark[i].mystery = (1800 * (i+1)) / 32;
+        state.spark[i].init(i);
 
     for (i = 0; i < MAX_SMOKE / 4; i++)
         for (var k = 0; k < 4; k++)
@@ -106,6 +102,7 @@ Flurry.GLSaver.render = function()
     state.smoke.draw();
 
     Flurry.renderer.render();
+
     if (config.debugFps)
         Flurry.stats.update();
 };

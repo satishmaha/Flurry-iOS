@@ -1,26 +1,46 @@
 // By Roy Curtis
 // Based off original code from https://github.com/calumr/flurry
 
-/** @constructor */
+/**
+ * Represents a single physical "stream" attached to a flurry's star. Handles the
+ * coloring and destination of their particles.
+ * @constructor
+ */
 Flurry.Spark = function()
 {
-    /** @type {Float32Array} */
+    /**
+     * Represents the 3D position that particles of this stream should flow towards
+     * @type {Float32Array}
+     */
     this.pos      = Vector3F();
-    /** @type {Float32Array} */
-    this.deltaPos = Vector3F();
     /** @type {Float32Array} */
     this.oldPos   = Vector3F();
     /** @type {Float32Array} */
-    this.color    = Vector3F();
-    /** @type {number} */
-    this.mystery  = 0;
+    this.deltaPos = Vector3F();
 
-    this.init = function()
+    /**
+     * Represents RGB color that the next burst of particles from this stream will use
+     * @type {Float32Array}
+     */
+    this.color = Vector3F();
+
+    /**
+     * Unique value that helps determine this stream's offset rotation from other streams
+     * @type {number}
+     */
+    this.mystery = 0;
+
+    this.init = function(spark)
     {
+        this.mystery = ( BIG_MYSTERY * (spark + 1) ) / 32;
+
         for (var i = 0; i < 3; i++)
             this.pos[i] = Math.randFlt(-100, 100);
     };
 
+    /**
+     * Called every frame; should be as optimized as possible
+     */
     this.update = function()
     {
         var state  = Flurry.GLSaver.State,
@@ -33,14 +53,15 @@ Flurry.Spark = function()
 
         var thisAngle = state.time * rotsPerSecond;
 
+        // Iterating instead of using Float32Array.set() as this is faster
         for (var i = 0; i < 3; i++)
             this.oldPos[i] = this.pos[i];
 
         var thisPointInRadians = 2 * Math.PI * this.mystery / BIG_MYSTERY,
             cf = (
-                Math.cos(7 * (state.time*rotsPerSecond))
-                + Math.cos(3 * (state.time*rotsPerSecond))
-                + Math.cos(13 * (state.time*rotsPerSecond))
+                Math.cos( 7 * (state.time * rotsPerSecond) )
+                + Math.cos( 3 * (state.time * rotsPerSecond) )
+                + Math.cos( 13 * (state.time * rotsPerSecond) )
             );
         cf /= 6.0;
         cf += 2.0;
@@ -80,6 +101,9 @@ Flurry.Spark = function()
             this.deltaPos[i] = (this.pos[i] - this.oldPos[i]) / state.deltaTime;
     };
 
+    /**
+     * Called every frame; should be as optimized as possible
+     */
     this.updateColor = function()
     {
         var state  = Flurry.GLSaver.State,

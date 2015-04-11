@@ -24,8 +24,7 @@ Flurry.Presets = {
             "streamBias": 7,
             "streamExpansion": 100,
             "streamSize": 25,
-            "streamSpeed": 45,
-            "debugFps": true
+            "streamSpeed": 45
         }
     },
     "Nevada": {

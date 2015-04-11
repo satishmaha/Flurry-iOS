@@ -99,7 +99,6 @@ Flurry.setupGui = function()
 
     var f3 = gui.addFolder('Debug');
     f3.add(config, 'debugFps').onChange(Flurry.toggleStats);
-    Flurry.toggleStats(true);
 };
 
 Flurry.toggleGui = function()
