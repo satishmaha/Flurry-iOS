@@ -9,7 +9,9 @@ Flurry.Spark = function()
     /** @type {Float32Array} */
     this.deltaPos = Vector3F();
     /** @type {Float32Array} */
-    this.color    = Vector4F();
+    this.oldPos   = Vector3F();
+    /** @type {Float32Array} */
+    this.color    = Vector3F();
     /** @type {number} */
     this.mystery  = 0;
 
@@ -29,11 +31,10 @@ Flurry.Spark = function()
         // Optimized from original code, which contained a duplicate of updateColor here
         this.updateColor();
 
-        var thisAngle = state.time * rotsPerSecond,
-            old       = Vector3F();
+        var thisAngle = state.time * rotsPerSecond;
 
         for (var i = 0; i < 3; i++)
-            old[i] = this.pos[i];
+            this.oldPos[i] = this.pos[i];
 
         var thisPointInRadians = 2 * Math.PI * this.mystery / BIG_MYSTERY,
             cf = (
@@ -76,7 +77,7 @@ Flurry.Spark = function()
         this.pos[2] = tmpZ4 + Math.randBell(5 * config.fieldCoherence);
 
         for (i=0;i<3;i++)
-            this.deltaPos[i] = (this.pos[i] - old[i]) / state.deltaTime;
+            this.deltaPos[i] = (this.pos[i] - this.oldPos[i]) / state.deltaTime;
     };
 
     this.updateColor = function()

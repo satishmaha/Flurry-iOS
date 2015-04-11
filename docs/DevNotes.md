@@ -1,3 +1,13 @@
+## Note 12
+
+It turns out that [vectors in SIMD are immutable](https://01.org/node/1495); that is, modifying any one of their properties (e.g.
+`this.pos.x = newPosX`) results in a new vector being created. This means that I would need to split
+the code base in two; code that uses SIMD and vector methods, and code that continues to use the
+array buffers, in order to keep performance good on all browsers.
+
+However, I will defer SIMD support for later and will try again when the code base is cleaner and when
+both the Firefox Nightly and the [strawman proposal](https://github.com/johnmccutchan/ecmascript_simd/blob/master/src/ecmascript_simd.js)'s implementations are complete and consistent.
+
 ## Note 11
 
 Transitioning to SIMD.js is proving a little difficult; for example, in Smoke.js, the `seraphimVertices`

@@ -14,7 +14,7 @@ Flurry.Smoke = function()
     this.lastParticleTime = 0;
 
     /** @type {Float32Array} */
-    this.oldPos    = new Vector3F();
+    this.oldPos    = new Float32Array(3);
     /** @type {boolean} */
     this.firstTime = false;
     /** @type {number} */
@@ -153,7 +153,7 @@ Flurry.Smoke = function()
             this.lastParticleTime = state.time;
         }
 
-        this.oldPos = Vector3F(state.star.pos);
+        this.oldPos.set(state.star.pos);
 
         var frameRate         = state.frame / state.time,
             frameRateModifier = 42.5 / frameRate;

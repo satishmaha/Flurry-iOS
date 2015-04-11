@@ -10,8 +10,6 @@ Flurry.Star = function()
     this.mystery  = 0.0;
     /** @type {number} */
     this.rotSpeed = 0.0;
-    /** @type {boolean} */
-    this.ate      = false;
 
     this.init = function()
     {
@@ -28,8 +26,6 @@ Flurry.Star = function()
             config        = Flurry.Config,
             rotsPerSecond = (2*Math.PI*12/MAX_ANGLES) * this.rotSpeed,
             thisAngle     = state.time * rotsPerSecond;
-
-        this.ate = false;
 
         var cf = Math.cos(7 * thisAngle) + Math.cos(3 * thisAngle) + Math.cos(13 * thisAngle);
 
