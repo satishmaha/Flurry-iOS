@@ -23,7 +23,6 @@ Flurry.gui = null;
  */
 Flurry.main = function()
 {
-    'use strict';
     console.log("[Main] Setting up renderer...");
     Flurry.renderer = new Flurry.Renderer('renderer');
     Flurry.renderer.useShader('vertexShader');
@@ -54,7 +53,6 @@ Flurry.main = function()
 
 Flurry.setupGui = function()
 {
-    'use strict';
     Flurry.gui   = new dat.GUI({load: Flurry.Presets});
     Flurry.stats = new Stats();
     Flurry.stats.begin();
@@ -100,20 +98,22 @@ Flurry.setupGui = function()
     f2.add(config, 'streamSpeed', 0, 100);
 
     var f3 = gui.addFolder('Debug');
-    f3.add(config, 'debugFps').onChange( function(v)
-    {
-        if (v)
-            Flurry.stats.begin();
-        else
-            Flurry.stats.end();
-
-        Flurry.stats.domElement.style.display = v ? "block" : "none";
-    });
+    f3.add(config, 'debugFps').onChange(Flurry.toggleStats);
+    Flurry.toggleStats(true);
 };
 
 Flurry.toggleGui = function()
 {
-    'use strict';
     Flurry.gui.domElement.style.display = Flurry.gui.hidden ? 'block' : 'none';
     Flurry.gui.hidden = !Flurry.gui.hidden;
+};
+
+Flurry.toggleStats = function(v)
+{
+    if (v)
+        Flurry.stats.begin();
+    else
+        Flurry.stats.end();
+
+    Flurry.stats.domElement.style.display = v ? "block" : "none";
 };

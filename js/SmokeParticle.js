@@ -7,8 +7,6 @@
  * */
 Flurry.SmokeParticle = function()
 {
-    'use strict';
-
     /**
      * Holds the RGBA for four quads (first index component, second index quad)
      * e.g. [0][2] gets the red component of the third quad

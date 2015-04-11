@@ -3,8 +3,6 @@
 
 Flurry.Smoke = function()
 {
-    'use strict';
-
     /** @type {Flurry.SmokeParticle[]} */
     this.particles = ArrayOf(Flurry.SmokeParticle, MAX_SMOKE / 4); // p
 
@@ -16,7 +14,7 @@ Flurry.Smoke = function()
     this.lastParticleTime = 0;
 
     /** @type {Float32Array} */
-    this.oldPos    = new Vector3F();
+    this.oldPos    = new Float32Array(3);
     /** @type {boolean} */
     this.firstTime = false;
     /** @type {number} */
@@ -25,9 +23,22 @@ Flurry.Smoke = function()
     /**
      * Buffer for the smoke mesh vertex positions. Big enough for each particle, times
      * four verticies, times two components (XY)
+     *
+     * SIMD.js: Original Flurry source dictates seraphimVertices as an array of 4
+     * -component vectors, whereas here we are flattening the entire thing into one
+     * array.
+     *
+     * Thus, I do not think this could benefit from being vectorized, or from SIMD
+     * operations, as the flattening is nessecary for WebGL AFAIK.
      * @type {Float32Array}
      */
-    this.seraphimVertices      = new Float32Array(MAX_SMOKE * 4 * 2);
+    this.seraphimVertices = new Float32Array(MAX_SMOKE * 4 * 2);
+
+    /**
+     * An all-zero buffer of seraphimVertices's size, to allow for quick blanking
+     * without having to create a new array each frame.
+     * @type {Float32Array}
+     */
     this.seraphimVerticesBlank = new Float32Array(MAX_SMOKE * 4 * 2);
 
     /**
@@ -53,8 +64,6 @@ Flurry.Smoke = function()
 
     this.init = function()
     {
-        'use strict';
-
         this.nextParticle     = 0;
         this.nextSubParticle  = 0;
         this.lastParticleTime = 0.25;
@@ -71,13 +80,16 @@ Flurry.Smoke = function()
         Flurry.renderer.setBuffer('uv',       this.seraphimTextures);
     };
 
+    /**
+     * Based on UpdateSmoke_ScalarFrsqrte
+     */
     this.update = function()
     {
-        'use strict';
-
-        var state   = Flurry.GLSaver.State,
-            config  = Flurry.Config,
-            starPos = Vector3F(state.star.pos);
+        var state    = Flurry.GLSaver.State,
+            config   = Flurry.Config,
+            starPosX = state.star.pos[0],
+            starPosY = state.star.pos[1],
+            starPosZ = state.star.pos[2];
 
         this.frame++;
 
@@ -88,9 +100,9 @@ Flurry.Smoke = function()
         }
         else if (state.time - this.lastParticleTime >= 1 / 121)
         {
-            var dx = this.oldPos[0] - starPos[0],
-                dy = this.oldPos[1] - starPos[1],
-                dz = this.oldPos[2] - starPos[2],
+            var dx = this.oldPos[0] - starPosX,
+                dy = this.oldPos[1] - starPosY,
+                dz = this.oldPos[2] - starPosZ,
                 deltaPos = new Float32Array([dx * 5, dy * 5, dz * 5]);
 
             for (var i = 0; i < config.numStreams; i++)
@@ -98,12 +110,12 @@ Flurry.Smoke = function()
                 this.particles[this.nextParticle].deltaPos[0][this.nextSubParticle] = deltaPos[0];
                 this.particles[this.nextParticle].deltaPos[1][this.nextSubParticle] = deltaPos[1];
                 this.particles[this.nextParticle].deltaPos[2][this.nextSubParticle] = deltaPos[2];
-                this.particles[this.nextParticle].pos[0][this.nextSubParticle]      = starPos[0];
-                this.particles[this.nextParticle].pos[1][this.nextSubParticle]      = starPos[1];
-                this.particles[this.nextParticle].pos[2][this.nextSubParticle]      = starPos[2];
-                this.particles[this.nextParticle].oldPos[0][this.nextSubParticle]   = starPos[0];
-                this.particles[this.nextParticle].oldPos[1][this.nextSubParticle]   = starPos[1];
-                this.particles[this.nextParticle].oldPos[2][this.nextSubParticle]   = starPos[2];
+                this.particles[this.nextParticle].pos[0][this.nextSubParticle]      = starPosX;
+                this.particles[this.nextParticle].pos[1][this.nextSubParticle]      = starPosY;
+                this.particles[this.nextParticle].pos[2][this.nextSubParticle]      = starPosZ;
+                this.particles[this.nextParticle].oldPos[0][this.nextSubParticle]   = starPosX;
+                this.particles[this.nextParticle].oldPos[1][this.nextSubParticle]   = starPosY;
+                this.particles[this.nextParticle].oldPos[2][this.nextSubParticle]   = starPosZ;
 
                 var streamSpeedCoherenceFactor = Math.max( 0, 1 + Math.randBell(0.25*config.incohesion) ),
                     dX  = this.particles[this.nextParticle].pos[0][this.nextSubParticle] - state.spark[i].pos[0],
@@ -141,7 +153,7 @@ Flurry.Smoke = function()
             this.lastParticleTime = state.time;
         }
 
-        this.oldPos = Vector3F(state.star.pos);
+        this.oldPos.set(state.star.pos);
 
         var frameRate         = state.frame / state.time,
             frameRateModifier = 42.5 / frameRate;
@@ -198,8 +210,6 @@ Flurry.Smoke = function()
 
     this.draw = function()
     {
-        'use strict';
-
         var particle,
             svii = 0,
             svi  = 0,

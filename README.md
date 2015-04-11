@@ -36,5 +36,5 @@ See `docs/DevNotes.md` for rough notes jotted down during the porting process.
 ## TODO
 
 * Restructure and clean up the code
-* Multiple/per-monitor flurry?
+* Multiple/per-monitor flurry? (perhaps package Flurry as a web component?)
 * Better support for mobile (alternative GUI to dat.gui?)

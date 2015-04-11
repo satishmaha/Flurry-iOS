@@ -10,8 +10,6 @@
  */
 Flurry.Renderer = function(canvasId)
 {
-    'use strict';
-
     var contextParams = {
         preserveDrawingBuffer: true,
         depth: false, stencil: false,
@@ -93,7 +91,6 @@ Flurry.Renderer = function(canvasId)
 
 Flurry.Renderer.prototype.setup = function()
 {
-    'use strict';
     var gl      = this.gl,
         GLES    = WebGLRenderingContext,
         program = gl.createProgram();
@@ -122,7 +119,6 @@ Flurry.Renderer.prototype.setup = function()
 
 Flurry.Renderer.prototype.render = function()
 {
-    'use strict';
     var gl   = this.gl,
         GLES = WebGLRenderingContext;
 
@@ -164,7 +160,6 @@ Flurry.Renderer.prototype.render = function()
 
 Flurry.Renderer.prototype.useShader = function(id)
 {
-    'use strict';
     var gl           = this.gl,
         GLES         = WebGLRenderingContext,
         shaderScript = document.getElementById(id),
@@ -189,7 +184,6 @@ Flurry.Renderer.prototype.useShader = function(id)
 
 Flurry.Renderer.prototype.setBuffer = function(type, data)
 {
-    'use strict';
     var gl = this.gl;
 
     this.buffers[type].buffer = gl.createBuffer();
@@ -198,14 +192,12 @@ Flurry.Renderer.prototype.setBuffer = function(type, data)
 
 Flurry.Renderer.prototype.setFade = function(alpha)
 {
-    'use strict';
     for (var i = 0; i < 4; i++)
         this.rect.color[i*4 + 3] = alpha;
 };
 
 Flurry.Renderer.prototype.setFadeColor = function(color)
 {
-    'use strict';
     for (var i = 0; i < 4; i++)
     {
         this.rect.color[i*4]   = color[0];
@@ -216,7 +208,6 @@ Flurry.Renderer.prototype.setFadeColor = function(color)
 
 Flurry.Renderer.prototype.setBlendMode = function(mode)
 {
-    'use strict';
     var GLES = WebGLRenderingContext;
     switch (mode)
     {
@@ -245,7 +236,6 @@ Flurry.Renderer.prototype.setBlendMode = function(mode)
 
 Flurry.Renderer.prototype.resize = function()
 {
-    'use strict';
     console.log("[Renderer] Resizing...");
     var gl     = this.gl,
         width  = window.innerWidth,
