@@ -48,13 +48,3 @@ Vector4F = function(value)
             ? new Float32Array([value, value, value, value])
             : new Float32Array(4);
 };
-
-/**
- * Creates an equivalent of a 4 value float vector with the first three elements set to
- * 0.0 and the final element 1.0. Represents an RGBA vector.
- * @returns {Float32Array}
- */
-Vector4C = function()
-{
-    return new Float32Array([0, 0, 0, 1.0])
-};
