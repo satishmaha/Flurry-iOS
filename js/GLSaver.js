@@ -41,7 +41,6 @@ Flurry.GLSaver.State.drag      = 0;
  */
 Flurry.GLSaver.timeSinceStart = function()
 {
-    'use strict';
     return (Date.now() - Flurry.GLSaver.timeCounter) / 1000;
 };
 
@@ -51,7 +50,6 @@ Flurry.GLSaver.timeSinceStart = function()
  */
 Flurry.GLSaver.setup = function()
 {
-    'use strict';
     var glSaver = Flurry.GLSaver,
         state   = glSaver.State;
 
@@ -88,7 +86,6 @@ Flurry.GLSaver.setup = function()
  */
 Flurry.GLSaver.render = function()
 {
-    'use strict';
     window.requestAnimationFrame(Flurry.GLSaver.render);
 
     var state  = Flurry.GLSaver.State,

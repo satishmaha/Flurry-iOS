@@ -52,7 +52,6 @@ ArrayOf.Vector4F = function(count)
 
 ArrayOf.ByteMatrix2 = function(a, b)
 {
-    "use strict";
     var matrix = new Array(a);
 
     for (var i = 0; i < a; i++)
@@ -63,7 +62,6 @@ ArrayOf.ByteMatrix2 = function(a, b)
 
 ArrayOf.ByteMatrix3 = function(a, b, c)
 {
-    "use strict";
     var matrix = new Array(a);
 
     for (var i = 0; i < a; i++)

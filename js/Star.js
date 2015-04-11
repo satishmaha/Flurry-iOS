@@ -4,8 +4,6 @@
 /** @constructor */
 Flurry.Star = function()
 {
-    'use strict';
-
     /** @type {Float32Array} */
     this.pos      = Vector3F();
     /** @type {number} */
@@ -17,8 +15,6 @@ Flurry.Star = function()
 
     this.init = function()
     {
-        'use strict';
-
         for (var i = 0; i < 3; i++)
             this.pos[i] = Math.randFlt(-10000, 10000);
 
@@ -28,8 +24,6 @@ Flurry.Star = function()
 
     this.update = function()
     {
-        'use strict';
-
         var state         = Flurry.GLSaver.State,
             config        = Flurry.Config,
             rotsPerSecond = (2*Math.PI*12/MAX_ANGLES) * this.rotSpeed,

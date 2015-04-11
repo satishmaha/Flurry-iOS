@@ -3,8 +3,6 @@
 
 Flurry.Smoke = function()
 {
-    'use strict';
-
     /** @type {Flurry.SmokeParticle[]} */
     this.particles = ArrayOf(Flurry.SmokeParticle, MAX_SMOKE / 4); // p
 
@@ -53,8 +51,6 @@ Flurry.Smoke = function()
 
     this.init = function()
     {
-        'use strict';
-
         this.nextParticle     = 0;
         this.nextSubParticle  = 0;
         this.lastParticleTime = 0.25;
@@ -73,8 +69,6 @@ Flurry.Smoke = function()
 
     this.update = function()
     {
-        'use strict';
-
         var state   = Flurry.GLSaver.State,
             config  = Flurry.Config,
             starPos = Vector3F(state.star.pos);
@@ -198,8 +192,6 @@ Flurry.Smoke = function()
 
     this.draw = function()
     {
-        'use strict';
-
         var particle,
             svii = 0,
             svi  = 0,

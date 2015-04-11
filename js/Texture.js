@@ -19,7 +19,6 @@ Flurry.Texture.firstTime = true;
 
 Flurry.Texture.smooth = function()
 {
-    'use strict';
     var i, j, t,
         filter = ArrayOf.ByteMatrix2(32, 32);
 
@@ -44,7 +43,6 @@ Flurry.Texture.smooth = function()
 
 Flurry.Texture.speckle = function()
 {
-    'use strict';
     var i, j, speck;
 
     for (i=2;i<30;i++)
@@ -68,7 +66,6 @@ Flurry.Texture.speckle = function()
 
 Flurry.Texture.makeSmallTexture = function()
 {
-    'use strict';
     var i, j, t, r;
 
     if (Flurry.Texture.firstTime)
@@ -111,8 +108,6 @@ Flurry.Texture.makeSmallTexture = function()
  */
 Flurry.Texture.copySmallToBig = function(k, l)
 {
-    'use strict';
-
     for (var i=0;i<32;i++)
     for (var j=0;j<32;j++)
     {
@@ -127,8 +122,6 @@ Flurry.Texture.copySmallToBig = function(k, l)
  */
 Flurry.Texture.averageLastAndFirst = function()
 {
-    'use strict';
-
     for (var i=0;i<32;i++)
     for (var j=0;j<32;j++)
     {
@@ -144,8 +137,6 @@ Flurry.Texture.averageLastAndFirst = function()
  */
 Flurry.Texture.create = function()
 {
-    'use strict';
-
     var gl   = Flurry.renderer.gl,
         GLES = WebGLRenderingContext;
 

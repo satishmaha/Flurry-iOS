@@ -4,8 +4,6 @@
 /** @constructor */
 Flurry.Spark = function()
 {
-    'use strict';
-
     /** @type {Float32Array} */
     this.pos      = Vector3F();
     /** @type {Float32Array} */
@@ -17,16 +15,12 @@ Flurry.Spark = function()
 
     this.init = function()
     {
-        'use strict';
-
         for (var i = 0; i < 3; i++)
             this.pos[i] = Math.randFlt(-100, 100);
     };
 
     this.update = function()
     {
-        'use strict';
-
         var state  = Flurry.GLSaver.State,
             config = Flurry.Config,
 
@@ -87,8 +81,6 @@ Flurry.Spark = function()
 
     this.updateColor = function()
     {
-        'use strict';
-
         var state  = Flurry.GLSaver.State,
             config = Flurry.Config,
             rotsPerSecond = 2 * Math.PI * config.fieldSpeed / MAX_ANGLES;

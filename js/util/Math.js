@@ -18,7 +18,6 @@ Math.fastDist2D = function(x, y)
 
 Math.randClib = function()
 {
-    "use strict";
     return Math.floor( Math.random() * 32767 );
 };
 
