@@ -18,7 +18,7 @@ canvas
 
 .error
 {
-    background:  url('res/original.png') no-repeat;
+    background:  url('../res/original.png') no-repeat;
     padding:     130px 300px;
     color:       white;
     font-family: sans-serif;

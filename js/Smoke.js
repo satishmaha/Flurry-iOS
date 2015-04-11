@@ -23,9 +23,22 @@ Flurry.Smoke = function()
     /**
      * Buffer for the smoke mesh vertex positions. Big enough for each particle, times
      * four verticies, times two components (XY)
+     *
+     * SIMD.js: Original Flurry source dictates seraphimVertices as an array of 4
+     * -component vectors, whereas here we are flattening the entire thing into one
+     * array.
+     *
+     * Thus, I do not think this could benefit from being vectorized, or from SIMD
+     * operations, as the flattening is nessecary for WebGL AFAIK.
      * @type {Float32Array}
      */
-    this.seraphimVertices      = new Float32Array(MAX_SMOKE * 4 * 2);
+    this.seraphimVertices = new Float32Array(MAX_SMOKE * 4 * 2);
+
+    /**
+     * An all-zero buffer of seraphimVertices's size, to allow for quick blanking
+     * without having to create a new array each frame.
+     * @type {Float32Array}
+     */
     this.seraphimVerticesBlank = new Float32Array(MAX_SMOKE * 4 * 2);
 
     /**
@@ -67,6 +80,9 @@ Flurry.Smoke = function()
         Flurry.renderer.setBuffer('uv',       this.seraphimTextures);
     };
 
+    /**
+     * Based on UpdateSmoke_ScalarFrsqrte
+     */
     this.update = function()
     {
         var state   = Flurry.GLSaver.State,

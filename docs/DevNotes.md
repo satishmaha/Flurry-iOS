@@ -1,3 +1,12 @@
+## Note 11
+
+Transitioning to SIMD.js is proving a little difficult; for example, in Smoke.js, the `seraphimVertices`
+array is flattened; effectively one dimensional. However in the original Flurry code, `seraphimVertices`
+is an array of 4-component vectors, which I assume OpenGL/C would convert to a flattened array.
+
+Thus, in that case at least, it would not benefit from vectorization or SIMD.js methods. I think I can
+try to apply it to SmokeParticle.js, at least.
+
 ## Note 10
 
 I will try to implement the AltiVec/Vector "engine" of Flurry again by using SIMD.js. As of writing,
